@@ -1,25 +1,24 @@
 <?php  
-$error="";
+$error1="";
+$error2="";
 
-$db = pg_connect("host=localhost port=5432 dbname=project user=postgres password=25071995h!");
-if (!$db) 
-	echo "not connected";
+$db = pg_connect("host=localhost port=5432 dbname=project user=postgres password=25071995h");
 if (isset($_POST['submit'])){
     $email = $_POST['email'];
     $password = $_POST['password'];
 
     $result = pg_query_params($db, 'SELECT password FROM carpooling.useraccount WHERE email= $1', array($email)); 
     $row = pg_fetch_array($result);
-    echo $row[0];
-    echo $password;
+    if (!isset($row[0])){
+        $error1 = "Email is invalid!";
+    }
     $verify = $password == $row[0];
 
     if ($verify) {
         $_SESSION['user']=$email;
-        echo "password is valid";
         header("Location: www.yahoo.com");    
     }else{
-        $error = "Username or Password is invalid!";
+        $error2 = "Password is invalid!";
     }
 }
 ?>
@@ -35,19 +34,17 @@ if (isset($_POST['submit'])){
 
 <body>
     <h2>Login Below</h2>
-    <form method="post" name="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+    <form method="post" name="form" action="login.php">
         Email:<br>
         <input type="text" name="email">
+        <span><?php if(isset($error1)) {echo $error1; } ?></span>
         <br>
         Password:<br>
-        <input type="text" name="password">
+        <input type="password" name="password">
+        <span><?php if(isset($error2) && !isset($error1)) {echo $error2; } ?></span>
         <br><br>
-        test
         <input type="submit" name="submit">
-        <div><?php if(isset($error)) {echo $error; } ?></div>
     </form>
 </body>
 
 </html>
-
-
