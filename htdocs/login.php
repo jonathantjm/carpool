@@ -1,17 +1,14 @@
 <?php  
 $error="";
 
-$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=byakuya~720");
-if(!$db){
-    echo "failed";
-}else{
-    echo "success";
-}
+$db = pg_connect("host=localhost port=5432 dbname=project user=postgres password=25071995h!");
+if (!$db) 
+	echo "not connected";
 if (isset($_POST['submit'])){
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $result = pg_query_params($db, 'SELECT password FROM useraccount WHERE email= $1', array($email)); 
+    $result = pg_query_params($db, 'SELECT password FROM carpooling.useraccount WHERE email= $1', array($email)); 
     $row = pg_fetch_array($result);
     echo $row[0];
     echo $password;
