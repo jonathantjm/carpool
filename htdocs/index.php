@@ -12,7 +12,7 @@
 <html>
 
 <body>
-	<div class="container">
+	<div>
 		<h2>Car Pooling</h2>
 		<button type="button" onclick="login_Display()">Login</button>
         <button type="button" onclick="signup_Display()">Signup</button>
