@@ -8,8 +8,8 @@ CREATE TABLE useraccount (
     contact_number VARCHAR(8) NOT NULL,
     email VARCHAR(40) PRIMARY KEY,
     password VARCHAR(20) NOT NULL,
-    vehicle_plate VARCHAR(9) UNIQUE NOT NULL,
-    capacity INTEGER NOT NULL,
+    vehicle_plate VARCHAR(9) UNIQUE,
+    capacity INTEGER,
     is_driver BOOLEAN DEFAULT FALSE,
     is_admin BOOLEAN DEFAULT FALSE
 );
