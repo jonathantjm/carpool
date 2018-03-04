@@ -1,42 +1,51 @@
 <?php  
-$error1="";
-$error2="";
+$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
+if(!$db){
+    echo "error connecting";
+}
+/*$value1 = 6;
+$value2 = 'bull';
+$result = pg_query_params($db, "INSERT INTO trial(sid, name) VALUES ($1, $2)", array($value1, $value2));
+if(!$result){
+    echo "There is still a problem.";
+}*/
 
-$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=byakuya~720");
 if (isset($_POST['submit'])){
     $email = $_POST['email'];
     $name = $_POST['username'];
     $contact_number = $_POST['contactnumber'];
     $vehicle_plate = $_POST['vehicleplate'];
     $password = $_POST['password'];
+    $password_repeat = $_POST['password_repeat'];
     $capacity = $_POST['capacity'];
-    $gender;
-    $isDriver;
-    if(isset($genderMale)){
-        $gender = 'Male';
-    }else{
-        $gender = "Female";
-    }
-    if(isset($isDriver)){
-        $isDriver = true;
-    }else{
-        $isDriver = false;
-    }
+    $gender = $_POST['gender'];
+    $isDriver = $_POST['isDriver'];
 
-    $result = pg_query_params($db, 'INSERT INTO useraccount VALUES ($1)', $email); 
-    $row = pg_fetch_array($result);
-    if (!isset($row[0])){
-        $error1 = "Email is invalid!";
-    }
-    $verify = $password == $row[0];
-
-    if ($verify) {
-        $_SESSION['user']=$email;
-        header("Location: www.yahoo.com");    
+    if($password != $password_repeat){
+        $message = "Password did not match! Please try again.";
+        echo $password;
+        echo $password_repeat;
+        echo $password == $password_repeat;
     }else{
-        $error2 = "Password is invalid!";
+        echo "here";
+        $result = pg_query_params($db, "INSERT INTO useraccount VALUES($1, $2, $3, $4, $5, $6, $7, $8, DEFAULT)", 
+        array($name, $gender, $contact_number, $email, $password, $vehicle_plate, $capacity, $isDriver));
+
+            /*,array($name, $gender, $contact_number, $email, $password, $vehicle_plate, $capacity, $isDriver));*/
+        /*$result = pg_query($db, "INSERT INTO useraccount VALUES('Jessica', 'Female', '87658678', 'jpohjt@yahoo.com',
+            'fishskin2', null, null, False, default)");*/
+        echo $result;
+        if(!$result){
+            echo "Insertion failed.";
+        }else{
+            $row = pg_fetch_array($result);
+            $message = $row[0];
+            echo $row[0];
+            echo Hellow;
+        }
     }
 }
+ 
 ?>
 
 <!DOCTYPE html>
@@ -50,26 +59,35 @@ if (isset($_POST['submit'])){
 
 <body>
     <h2>Sign-up Below</h2>
-    <form method="post" name="signupform" action="login.php">
+    <form method="post" name="signupform" onsubmit="check()">
         Name: <input type="text" name="username"><br><br>
         Gender:<br><br>
-        <input type="radio" name="genderMale" value="male" checked> Male 
-        <input type="radio" name="genderFemale" value="female"> Female<br><br>
+        <input type="radio" name="gender" value="Male" checked> Male 
+        <input type="radio" name="gender" value="Female"> Female<br><br>
         Driver:<br><br>
         <input type="radio" name="isDriver" value="Yes"> Yes
-        <input type="radio" name="notDriver" value="No" checked> No<br><br>
+        <input type="radio" name="isDriver" value="No" checked> No<br><br>
         Contact Number: <input type="text" name="contactnumber"><br><br>
         Vehicle Plate (*if driver): <input type="text" name="vehicleplate"><br><br>
         Capacity of vehicle (*if driver): <input type="text" name="capacity"><br><br>
         Email: <input type="text" name="email">
-        <span><?php if(isset($error1)) {echo $error1; } ?></span>
         <br><br>
         Password: <input type="password" name="password">
-        <span><?php if(isset($error2) && !isset($error1)) {echo $error2; } ?></span>
+        <br><br>
+        Password(repeat): <input type="password" name="password_repeat">
         <br><br>
         <input type="submit" name="submit">
     </form>
+    <div><?php if (isset($message)) {echo $message;} ?>
 </body>
+<script>
+function check() {
+    if(document.forms["signupform"]["vehicleplate"].value == "")
+        document.forms["signupform"]["vehicleplate"].value = null;
+    if(document.forms["signupform"]["capacity"].value == "")
+        document.forms["signupform"]["capacity"].value = null;
+}
+</script>
 
 </html>
 
