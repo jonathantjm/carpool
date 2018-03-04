@@ -1,23 +1,28 @@
 <?php  
 $error="";
 
-$db = pg_connect("host=localhost port=5432 dbname=project user=postgres password=25071995h!");
+$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
 if (!$db) 
 	echo "not connected";
 if (isset($_POST['submit'])){
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $result = pg_query_params($db, 'SELECT password FROM carpooling.useraccount WHERE email= $1', array($email)); 
+    $result = pg_query_params($db, 'SELECT password, is_admin FROM useraccount WHERE email= $1', array($email)); 
     $row = pg_fetch_array($result);
     echo $row[0];
     echo $password;
     $verify = $password == $row[0];
-
+	$isAdmin = $row[1];
+	
     if ($verify) {
         $_SESSION['user']=$email;
         echo "password is valid";
-        header("Location: www.yahoo.com");    
+		if ($isAdmin) {
+			header("Location: adminPage.php");
+		} else {
+			header("Location: userPage.php");
+		}		
     }else{
         $error = "Username or Password is invalid!";
     }
