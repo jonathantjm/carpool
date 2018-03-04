@@ -1,15 +1,8 @@
 <?php  
-$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
+$db = pg_connect("host=localhost port=5432 dbname=carpooling user=postgres password=byakuya~720");
 if(!$db){
     echo "error connecting";
 }
-/*$value1 = 6;
-$value2 = 'bull';
-$result = pg_query_params($db, "INSERT INTO trial(sid, name) VALUES ($1, $2)", array($value1, $value2));
-if(!$result){
-    echo "There is still a problem.";
-}*/
-
 if (isset($_POST['submit'])){
     $email = $_POST['email'];
     $name = $_POST['username'];
@@ -20,32 +13,28 @@ if (isset($_POST['submit'])){
     $capacity = $_POST['capacity'];
     $gender = $_POST['gender'];
     $isDriver = $_POST['isDriver'];
+    //Still need to check for two things: when isDriver is false, vehicle_plate and capacity should be empty.
+    //if isDriver is true, then ALL fields must be filled.
+    if($capacity == ""){
+        $capacity = NULL;
+    }
+    if($vehicle_plate == ""){
+        $vehicle_plate = NULL;
+    }
 
     if($password != $password_repeat){
         $message = "Password did not match! Please try again.";
-        echo $password;
-        echo $password_repeat;
-        echo $password == $password_repeat;
     }else{
-        echo "here";
         $result = pg_query_params($db, "INSERT INTO useraccount VALUES($1, $2, $3, $4, $5, $6, $7, $8, DEFAULT)", 
-        array($name, $gender, $contact_number, $email, $password, $vehicle_plate, $capacity, $isDriver));
-
-            /*,array($name, $gender, $contact_number, $email, $password, $vehicle_plate, $capacity, $isDriver));*/
-        /*$result = pg_query($db, "INSERT INTO useraccount VALUES('Jessica', 'Female', '87658678', 'jpohjt@yahoo.com',
-            'fishskin2', null, null, False, default)");*/
-        echo $result;
+            array($name, $gender, $contact_number, $email, $password, $vehicle_plate, $capacity, $isDriver));
         if(!$result){
             echo "Insertion failed.";
         }else{
             $row = pg_fetch_array($result);
             $message = $row[0];
-            echo $row[0];
-            echo Hellow;
         }
     }
 }
- 
 ?>
 
 <!DOCTYPE html>
@@ -59,7 +48,7 @@ if (isset($_POST['submit'])){
 
 <body>
     <h2>Sign-up Below</h2>
-    <form method="post" name="signupform" onsubmit="check()">
+    <form method="post" name="signupform">
         Name: <input type="text" name="username"><br><br>
         Gender:<br><br>
         <input type="radio" name="gender" value="Male" checked> Male 
@@ -80,15 +69,6 @@ if (isset($_POST['submit'])){
     </form>
     <div><?php if (isset($message)) {echo $message;} ?>
 </body>
-<script>
-function check() {
-    if(document.forms["signupform"]["vehicleplate"].value == "")
-        document.forms["signupform"]["vehicleplate"].value = null;
-    if(document.forms["signupform"]["capacity"].value == "")
-        document.forms["signupform"]["capacity"].value = null;
-}
-</script>
-
 </html>
 
 
