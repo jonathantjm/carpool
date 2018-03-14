@@ -1,4 +1,5 @@
 <?php  
+session_start();
 $error1="";
 $error2="";
 
@@ -19,9 +20,9 @@ if (isset($_POST['submit'])){
 
     if ($verify) {
         $_SESSION['user']=$email;
-        header("Location: www.yahoo.com");    
+        //header("Location: www.yahoo.com");
         echo "password is valid";
-        if ($isAdmin) {
+        if ($isAdmin != 'f') {
             header("Location: adminPage.php");
         } else {
             header("Location: userPage.php");
