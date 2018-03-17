@@ -1,4 +1,5 @@
 <?php  
+
 $db = pg_connect("host=localhost port=5432 dbname=carpooling user=postgres password=byakuya~720");
 if(!$db){
     echo "error connecting";
@@ -13,8 +14,6 @@ if (isset($_POST['submit'])){
     $capacity = $_POST['capacity'];
     $gender = $_POST['gender'];
     $isDriver = $_POST['isDriver'];
-    //Still need to check for two things: when isDriver is false, vehicle_plate and capacity should be empty.
-    //if isDriver is true, then ALL fields must be filled.
     if($capacity == ""){
         $capacity = NULL;
     }
@@ -35,11 +34,24 @@ if (isset($_POST['submit'])){
         }
     }
 }
+
 ?>
 
 <!DOCTYPE html>
 <html>
-
+<script type="text/javascript">
+function checkDriver() {
+    if(document.getElementById("yesDriver").checked){
+        document.getElementById("vehicleplate").disabled = false;
+        document.getElementById("capacity").disabled = false;
+    }else {
+        document.getElementById("vehicleplate").disabled = true;
+        document.getElementById("capacity").disabled = true;
+        document.getElementById("vehicleplate").required = true;
+        document.getElementById("capacity").required = true;
+    }
+}
+</script>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,26 +61,27 @@ if (isset($_POST['submit'])){
 <body>
     <h2>Sign-up Below</h2>
     <form method="post" name="signupform">
-        Name: <input type="text" name="username"><br><br>
+        Name: <input type="text" name="username" required><br><br>
         Gender:<br><br>
         <input type="radio" name="gender" value="Male" checked> Male 
         <input type="radio" name="gender" value="Female"> Female<br><br>
         Driver:<br><br>
-        <input type="radio" name="isDriver" value="Yes"> Yes
-        <input type="radio" name="isDriver" value="No" checked> No<br><br>
-        Contact Number: <input type="text" name="contactnumber"><br><br>
-        Vehicle Plate (*if driver): <input type="text" name="vehicleplate"><br><br>
-        Capacity of vehicle (*if driver): <input type="text" name="capacity"><br><br>
-        Email: <input type="text" name="email">
+        <input type="radio" name="isDriver" id="yesDriver" value="Yes" checked onclick="checkDriver()"> Yes
+        <input type="radio" name="isDriver" value="No" onclick="checkDriver()"> No<br><br>
+        Contact Number: <input type="text" name="contactnumber" required><br><br>
+        Vehicle Plate (*if driver): <input type="text" name="vehicleplate" id="vehicleplate"><br><br>
+        Capacity of vehicle (*if driver): <input type="text" name="capacity" id="capacity"><br><br>
+        Email: <input type="text" name="email" required>
         <br><br>
-        Password: <input type="password" name="password">
+        Password: <input type="password" name="password" required>
         <br><br>
-        Password(repeat): <input type="password" name="password_repeat">
+        Password(repeat): <input type="password" name="password_repeat" required>
         <br><br>
         <input type="submit" name="submit">
     </form>
     <div><?php if (isset($message)) {echo $message;} ?>
 </body>
+
 </html>
 
 
