@@ -24,12 +24,19 @@ if (isset($_POST['submit'])){
     if($password != $password_repeat){
         $message = "Password did not match! Please try again.";
     }else{
-        $result = pg_query_params($db, "INSERT INTO useraccount VALUES($1, $2, $3, $4, $5, $6, $7, $8, DEFAULT)", 
-            array($name, $gender, $contact_number, $email, $password, $vehicle_plate, $capacity, $isDriver));
-        if(!$result){
+        /*$result = pg_query_params($db, "INSERT INTO useraccount VALUES($1, $2, $3, $4, $5, $6, $7, $8, DEFAULT)", 
+        array($name, $gender, $contact_number, $email, $password, $vehicle_plate, $capacity, $isDriver));*/
+        $result = pg_query_params($db, 'SELECT add_user($1, $2, $3, $4, $5, $6, $7, $8, false)', array($name, $gender, $contact_number, $email, $password, $vehicle_plate, $capacity, $isDriver));
+        /*if(!$result){
             echo "Insertion failed.";
         }else{
             $row = pg_fetch_array($result);
+            $message = $row[0];
+        }*/
+        $row = pg_fetch_array($result);
+        if(!isset($row)){
+            $message = "Failed to create account! Please check your values again!";
+        }else{
             $message = $row[0];
         }
     }
@@ -44,11 +51,13 @@ function checkDriver() {
     if(document.getElementById("yesDriver").checked){
         document.getElementById("vehicleplate").disabled = false;
         document.getElementById("capacity").disabled = false;
+        document.getElementById("capacity").placeholder = "Single digit only";
     }else {
         document.getElementById("vehicleplate").disabled = true;
         document.getElementById("capacity").disabled = true;
         document.getElementById("vehicleplate").required = true;
         document.getElementById("capacity").required = true;
+        document.getElementById("capacity").placeholder = "";
     }
 }
 </script>
@@ -68,9 +77,9 @@ function checkDriver() {
         Driver:<br><br>
         <input type="radio" name="isDriver" id="yesDriver" value="Yes" checked onclick="checkDriver()"> Yes
         <input type="radio" name="isDriver" value="No" onclick="checkDriver()"> No<br><br>
-        Contact Number: <input type="text" name="contactnumber" required><br><br>
+        Contact Number: <input type="text" name="contactnumber" placeholder="Numbers only" required><br><br>
         Vehicle Plate (*if driver): <input type="text" name="vehicleplate" id="vehicleplate"><br><br>
-        Capacity of vehicle (*if driver): <input type="text" name="capacity" id="capacity"><br><br>
+        Capacity of vehicle (*if driver): <input type="text" name="capacity" id="capacity" placeholder="Single digit only"><br><br>
         Email: <input type="text" name="email" required>
         <br><br>
         Password: <input type="password" name="password" required>
