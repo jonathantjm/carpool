@@ -1,6 +1,6 @@
 <?php  
 
-$db = pg_connect("host=localhost port=5432 dbname=carpooling user=postgres password=byakuya~720");
+$db = pg_connect("host=localhost port=5432 dbname=carpooling user=postgres password=25071995h!");
 if(!$db){
     echo "error connecting";
 }

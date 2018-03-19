@@ -45,7 +45,7 @@ while($row = pg_fetch_array( $result )) {
 
 <p>Add a new bid</p>
 
-<p><a href="adminCreateOffer.php">New bid</a></p>
+<p><a href="adminCreateOffer.php">New offer</a></p>
 
 </body>
 

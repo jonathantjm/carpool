@@ -14,21 +14,21 @@ if (isset($_POST['submit'])){
     $row = pg_fetch_array($result);
     if (!isset($row[0])){
         $error1 = "Email is invalid!";
-    }
-    $verify = $password == $row[0];
-    $isAdmin = $row[1];
+    } else {
+        $verify = $password == $row[0];
+        $isAdmin = $row[1];
 
-    if ($verify) {
-        $_SESSION['user']=$email;
-        //header("Location: www.yahoo.com");
-        echo "password is valid";
-        if ($isAdmin != 'f') {
-            header("Location: adminPage.php");
-        } else {
-            header("Location: userPage.php");
-        }		
-    }else{
-        $error2 = "Password is invalid!";
+        if ($verify) {
+            $_SESSION['user']=$email;
+            echo "password is valid";
+            if ($isAdmin != 'f') {
+                header("Location: adminPage.php");
+            } else {
+                header("Location: userPage.php");
+            }		
+        }else{
+            $error2 = "Password is invalid!";
+        }
     }
 }
 ?>
