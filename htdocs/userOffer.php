@@ -17,7 +17,6 @@ $result = pg_query($db, "SELECT * FROM advertisements
 <?php 
 
 echo "<tr>
-		<th>Advertisement ID</th>
 		<th>Start Location</th>
 		<th>End Location</th>
 		<th>Pick up date</th>
@@ -29,7 +28,6 @@ echo "<tr>
 
 while($row = pg_fetch_array( $result )) { 
 	echo "<tr>";
-		echo "<td>" . $row[0] . "</td>";
 		echo "<td>" . $row[2] . "</td>";
 		echo "<td>" . $row[3] . "</td>";
 		echo "<td>" . $row[5] . "</td>";
