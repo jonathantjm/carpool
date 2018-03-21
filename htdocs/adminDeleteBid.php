@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 //Verify admin permissions
 $isAdmin = $_SESSION['isAdmin'];
 if($isAdmin == 'f') {

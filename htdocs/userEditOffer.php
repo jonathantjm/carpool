@@ -1,7 +1,7 @@
 <?php
-session_start();
+include("header.php");
+include("userNavBar.php");
 
-$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
 $locations = pg_query($db, "SELECT * FROM locations"); 
 
 //echo $_GET['id'];

@@ -1,9 +1,5 @@
 <?php
-
-$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
-
-//echo $_GET['id'];
-//echo $_GET['mail'];
+include("header.php");
 
 $userMail = $_GET['email'];
 

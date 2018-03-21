@@ -1,5 +1,7 @@
 <?php  
-$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
+include("header.php");
+include("adminNavBar.php");
+
 $result = pg_query($db, 'SELECT * FROM advertisements'); 
 ?>
 

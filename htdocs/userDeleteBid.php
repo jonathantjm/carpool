@@ -1,10 +1,5 @@
 <?php
-session_start();
-
-$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
-
-//echo $_GET['id'];
-//echo $_GET['mail'];
+include("header.php");
 
 $advertisementID = $_GET['id'];
 $email = $_SESSION['user'];

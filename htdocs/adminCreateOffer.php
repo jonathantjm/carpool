@@ -1,6 +1,7 @@
 <?php
-session_start();
-$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
+include("header.php");
+include("adminNavBar.php");
+
 $locations = pg_query($db, "SELECT * FROM locations"); 
 $max_advertisementID = pg_query($db, "SELECT max(advertisementID) FROM advertisements"); 
 

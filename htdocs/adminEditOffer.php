@@ -26,8 +26,9 @@ table.sample td {
 </style>
 
 <?php
+include("header.php");
+include("adminNavBar.php");
 
-$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
 $locations = pg_query($db, "SELECT * FROM locations"); 
 if(!$db){
     echo "cannot connect";

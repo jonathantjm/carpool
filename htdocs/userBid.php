@@ -1,6 +1,6 @@
 <?php  
-session_start();
-$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
+include("header.php");
+include("userNavBar.php");
 
 //echo 'DB is connected';
 $result = pg_query($db, "SELECT * FROM bid B, advertisements A
