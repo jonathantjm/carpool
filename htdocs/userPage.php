@@ -2,10 +2,10 @@
 
 <script type="text/javascript">
   function bid_Display() {
-    window.location = "offer.php";
+    window.location = "userBid.php";
   }
   function offer_Display() {
-	window.location = "bid.php";
+	window.location = "userOffer.php";
   }
   function accept_Display() {
 	window.location = "accept.php";
