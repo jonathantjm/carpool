@@ -1,4 +1,7 @@
-<?php	session_start();  ?>
+<?php
+include("header.php");
+include("userNavBar.php");
+?>
 
 <script type="text/javascript">
   function bid_Display() {
