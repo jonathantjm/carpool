@@ -1,4 +1,5 @@
 <?php  
+session_start();
 $error="";
 
 $db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
@@ -17,8 +18,9 @@ if (isset($_POST['submit'])){
 	
     if ($verify) {
         $_SESSION['user']=$email;
+		$_SESSION['isAdmin']=$isAdmin;
         echo "password is valid";
-		if ($isAdmin) {
+		if ($isAdmin == 't') {
 			header("Location: adminPage.php");
 		} else {
 			header("Location: userPage.php");
