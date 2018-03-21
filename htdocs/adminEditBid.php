@@ -1,113 +1,106 @@
-<style type="text/css">
-table.sample {
-	border-width: 2px;
-	border-spacing: 1px;
-	border-style: solid;
-	border-color: black;
-	border-collapse: collapse;
-	background-color: white;
-}
-table.sample th {
-	border-width: 1px;
-	padding: 1px;
-	border-style: inset;
-	border-color: gray;
-	background-color: white;
-	-moz-border-radius: ;
-}
-table.sample td {
-	border-width: 1px;
-	padding: 1px;
-	border-style: inset;
-	border-color: gray;
-	background-color: white;
-	-moz-border-radius: ;
-}
-</style>
-
 <?php
 
-$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
+session_start();
 
-//echo $_GET['id'];
-//echo $_GET['mail'];
+//Verify admin permissions
+$isAdmin = $_SESSION['isAdmin'];
+if($isAdmin == 'f') {
+	$message = "You are not authorized to view this page!";
+	echo "<script type='text/javascript'>alert('$message');
+		window.location.href='login.php';
+	</script>";
+}
+
+$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
 
 $advertisementID = $_GET['id'];
 $email = $_GET['mail'];
 $result = pg_query_params($db, 'SELECT * FROM bid WHERE advertisementid = $1 AND email = $2', array($advertisementID, $email));
 $row = pg_fetch_array($result);
 
-if(is_null($advertisementID)){
-	echo 'no adv ID detected';
-} else {
-	echo 'found adv ID...';
-	//echo $advertisementID;
-	//echo $email;
-}
+//Obtain timezone
+date_default_timezone_set("Singapore");
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['submitForm'])) {
 	
-	echo $newMail = $_POST['email'];
-	echo $newID = $_POST['advertisementID'];
-	echo $newStatus = $_POST['status'];
-	echo $newPrice = $_POST['price'];
-	echo $newDateAndTime = $_POST['timestamp'];
+	$newMail = $_POST['email'];
+	$newID = $_POST['advertisementID'];
+	$newStatus = $_POST['status'];
+	$newPrice = $_POST['price'];
+	$newDateAndTime = date("Y/m/d h:i:s");
 
 	pg_query_params($db, 'UPDATE bid SET email = $3, advertisementid = $4, status = $5, price = $6, creation_date_and_time = $7 WHERE advertisementid = $1 AND email = $2', array($advertisementID, $email, $newMail, $newID, $newStatus, $newPrice, $newDateAndTime));
+	
+	$row[0] = $newMail;
+	$row[1] = $newID;
+	$row[2] = $newStatus;
+	$row[3] = $newPrice;
 
-	echo pg_last_error($db);
-
-	header("Location: adminBid.php");
-
+	if (preg_match('/advertisementid/i', pg_last_error($db))) {
+		echo 'Advertisement id does not exists';		
+	} elseif (preg_match('/email/i', pg_last_error($db))) {
+		echo 'Email does not exists';
+	} else {
+		header("Location: adminBid.php");
+	}
 }
-
 ?>
 
 <html>
-
-<h2>Old:</h2>
-
-<?php
-echo "<table class ='sample'>";
-	echo "<tr>";
-		echo "<th>Email</th>";
-		echo "<th>Advertisement ID</th>";
-		echo "<th>Status</th>";
-		echo "<th>Price</th>";
-		echo "<th>Date and Time created</th>";
-	echo "</tr>";
-	echo "<tr>";
-		echo "<td>" . $row[0] . "</td>";
-		echo "<td>" . $row[1] . "</td>";
-		echo "<td>" . $row[2] . "</td>";
-		echo "<td>" . $row[3] . "</td>";
-		echo "<td>" . $row[4] . "</td>";
-	echo "</tr>";
-echo "</table>";
-?>
-
-<h2>New:</h2>
-
-<form action="" method="post">
-
-<div>
-
-<strong>Email: *</strong> <input type="text" name="email" /><br/>
-
-<strong>Advertisement ID: *</strong> <input type="text" name="advertisementID" /><br/>
-
-<strong>Status: *</strong> <input type="text" name="status" /><br/>
-
-<strong>Price: *</strong> <input type="number" name="price" /><br/>
-
-<strong>Date and Time created: *</strong> <input type="test" name="timestamp" /><br/>
-
-<p>* required</p>
-
-<input type="submit" name="submit" value="Submit">
-
-</div>
-
-</form>
-
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>		
+	</head>
+	<body>
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<div class="navbar-header">
+				  <a class="navbar-brand" href="adminPage.php">Car Pool</a>
+				</div>
+				<div>
+					<ul class="nav navbar-nav">
+						<li class="dropdown">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="adminBid.php">Bids
+							<span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="adminBid.php">View all</a></li>
+								<li><a href="adminCreateBid.php">Create bid</a></li>
+							</ul>
+						</li>
+						<li><a href="adminOffer.php">Advertisements</a></li>
+						<li><a href="adminUser.php">Users</a></li>
+					</ul>
+				</div>
+				<div>
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="logout.php">Logout</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<h2>Edit Bid</h2>
+		<form action="" method="post">
+			<div class='form-group'>
+				<label for='inputEmail'>Email address</label>
+				<?php echo"<input type='text' name='email' class='form-control' id='inputEmail' value='" . $row[0] . "'>";?>
+			</div>
+			<div class='form-group'>
+				<label for='inputID'>Advertisement ID</label>
+				<?php echo "<input type='text' name='advertisementID' class='form-control' id='inputID' value='" . $row[1] . "'>";?>
+			</div>
+			<div class='form-group'>
+				<label for='inputStatus'>Status</label>
+				<?php echo "<input type='text' name='status' class='form-control' id='inputStatus' value='" . $row[2] . "'>";?>
+			</div>
+			<div class='form-group'>
+				<label for='inputPrice'>Price</label>
+				<?php echo"<input type='number' min='0.01' step='0.01' name='price' class='form-control' id='inputPrice' value='" . $row[3] . "'>";?>
+			</div>
+			<button type="submit" name="submitForm" class="btn btn-primary">Submit</button>
+		</form>
+	</body>
 </html>

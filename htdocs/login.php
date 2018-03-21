@@ -1,9 +1,12 @@
 <?php  
 session_start();
+
 $error1="";
 $error2="";
 
+
 $db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
+
 if (!$db) 
     echo "not connected";
 if (isset($_POST['submit'])){
@@ -12,6 +15,7 @@ if (isset($_POST['submit'])){
 
     $result = pg_query_params($db, 'SELECT password, is_admin FROM useraccount WHERE email= $1', array($email)); 
     $row = pg_fetch_array($result);
+
     if (!isset($row[0])){
         $error1 = "Email is invalid!";
     } else {
@@ -20,13 +24,14 @@ if (isset($_POST['submit'])){
 
         if ($verify) {
             $_SESSION['user']=$email;
+            $_SESSION['isAdmin']=$isAdmin;
             echo "password is valid";
             if ($isAdmin != 'f') {
                 header("Location: adminPage.php");
             } else {
                 header("Location: userPage.php");
             }		
-        }else{
+        } else{
             $error2 = "Password is invalid!";
         }
     }
