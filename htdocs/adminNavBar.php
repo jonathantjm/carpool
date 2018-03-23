@@ -4,7 +4,7 @@
 		<nav class="navbar navbar-inverse">
 			<div class="container-fluid">
 				<div class="navbar-header">
-				  <a class="navbar-brand" href="adminPage.php">Car Pool</a>
+				  <a class="navbar-brand" href="adminPage.php"><i class="fas fa-car"></i>Car Pool</a>
 				</div>
 				<div>
 					<ul class="nav navbar-nav">
@@ -29,7 +29,7 @@
 				</div>
 				<div>
 					<ul class="nav navbar-nav navbar-right">
-						<li><a href="logout.php">Logout</a></li>
+						<li><a href="logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
 					</ul>
 				</div>
 			</div>

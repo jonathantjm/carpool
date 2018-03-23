@@ -12,14 +12,17 @@ if($isAdmin == 'f') {
 }
 
 $result = pg_query($db, 'SELECT * FROM bid'); 
+$counter = 1;
 ?>
+
 
 <html>
 	<body>
-		<h1><b>Existing Bidding Information</b></h1>
+		<h1 class="text-center">Existing Bidding Information</h1>
 		<table class="table table-bordered">
 <?php 
 echo "<tr>
+		<th>S/N</th>
 		<th>Email</th>
 		<th>AdvertisementID</th>
 		<th>Status</th>
@@ -28,17 +31,22 @@ echo "<tr>
 	</tr>";
 while($row = pg_fetch_array( $result )) { 
 	echo "<tr>";
+		echo "<td>" . $counter . "</td>";
 		echo "<td>" . $row[0] . "</td>";
 		echo "<td>" . $row[1] . "</td>";
 		echo "<td>" . $row[2] . "</td>";
 		echo "<td>" . $row[3] . "</td>";
 		echo "<td>" . $row[4] . "</td>";
-		echo "<td><a href='adminDeleteBid.php?id=", urlencode($row[1]), "&mail=", urlencode($row[0]), "'>Delete</a></td>";
-		echo "<td><a href='adminEditBid.php?id=", urlencode($row[1]), "&mail=", urlencode($row[0]), "'>Edit</a></td>";
+		echo "<td class='table-fit'><a href='adminDeleteBid.php?id=", urlencode($row[1]), "&mail=", urlencode($row[0]), "' class='btn btn-primary' role='button'>Delete</a></td>";
+		echo "<td class='table-fit'><a href='adminEditBid.php?id=", urlencode($row[1]), "&mail=", urlencode($row[0]), "' class='btn btn-primary' role='button'>Edit</a></td>";
 	echo "</tr>";
+	$counter++;
 }
 ?>
 		</table>
-		<p><a href="adminCreateBid.php">Add a new bid?</a></p>
+		<a href="adminCreateBid.php" class="btn btn-primary" role="button">Create new bid?</a>
+		<ul class="pager">
+			<li class="previous"><a href="adminPage.php">Back</a></li>
+		</ul>
 	</body>
 </html>
