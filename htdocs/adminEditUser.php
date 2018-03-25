@@ -1,130 +1,129 @@
-<style type="text/css">
-table.sample {
-    border-width: 2px;
-    border-spacing: 1px;
-    border-style: solid;
-    border-color: black;
-    border-collapse: collapse;
-    background-color: white;
-}
-table.sample th {
-    border-width: 1px;
-    padding: 1px;
-    border-style: inset;
-    border-color: gray;
-    background-color: white;
-    -moz-border-radius: ;
-}
-table.sample td {
-    border-width: 1px;
-    padding: 1px;
-    border-style: inset;
-    border-color: gray;
-    background-color: white;
-    -moz-border-radius: ;
-}
-</style>
-
 <?php
 include("header.php");
 include("adminNavBar.php");
 
-if(!$db){
-    echo "cannot connect";
+//Verify admin permissions
+$isAdmin = $_SESSION['isAdmin'];
+if($isAdmin == 'f') {
+    $message = "You are not authorized to view this page!";
+    echo "<script type='text/javascript'>alert('$message');
+    window.location.href='login.php';
+    </script>";
 }
 
-//echo $_GET['id'];
-//echo $_GET['mail'];
+//Initialize potential errors
+$vehiclePlateError = '';
+$emailError = '';
 
 $userMail = $_GET['email'];
 $result = pg_query_params($db, 'SELECT * FROM useraccount WHERE email = $1', array($userMail));
 $row = pg_fetch_array($result);
 
-if(is_null($userMail)){
-    echo 'No such user found.';
-}
-
 if (isset($_POST['submit'])) {
 
-    echo $newName = $_POST['name'];
-    echo $newGender = $_POST['gender'];
-    echo $newContact = $_POST['contact_number'];
-    echo $newEmail = $_POST['email'];
-    echo $newPassword = $_POST['password'];
-    echo $newVehiclePlate = $_POST['vehicle_plate'];
-    echo $newCapacity = $_POST['capacity'];
-    echo $isADriver = $_POST['isDriver'];
-    
-    //Check for email and vehicle plate unique constraints. Probably use a function to take care of it.
+    $newName = $_POST['name'];
+    $newGender = $_POST['gender'];
+    $newContact = $_POST['contact_number'];
+    $newEmail = $_POST['email'];
+    $newPassword = $_POST['password'];
+    $newVehiclePlate = $_POST['vehicle_plate'];
+    $newCapacity = $_POST['capacity'];
+    $isADriver = $_POST['isDriver'];
+
+    if($isADriver == 'n'){
+        $newCapacity = NULL;
+        $newVehiclePlate = NULL;
+    }
 
     pg_query_params($db, 'UPDATE useraccount SET name = $2, gender = $3, contact_number = $4, email = $5,password = $6, vehicle_plate = $7, capacity = $8, is_driver = $9 WHERE email = $1', array($userMail, $newName, $newGender, $newContact, $newEmail, $newPassword, $newVehiclePlate, $newCapacity, $isADriver));
 
-    echo pg_last_error($db);
+    $row[0] = $newName;
+    $row[1] = $newGender;
+    $row[2] = $newContact;
+    $row[3] = $newEmail;
+    $row[4] = $newPassword;
+    $row[5] = $newVehiclePlate;
+    $row[6] = $newCapacity;
+    $row[7] = $isADriver;
 
-    header("Location: adminUser.php");
-
+    $error = pg_last_error($db);
+    if (preg_match('/email/i', $error)) {
+        $emailError = 'Email is already in use.';
+    } else if (preg_match('/vehicle_plate/i', $error)) {
+        $vehiclePlateError = 'Vehicle plate number is already in use.';
+    } else {
+        header("Location: adminUser.php");
+    }
 }
 
 ?>
 
 <html>
-
-<h2>Old:</h2>
-
-<?php
-echo "<table class ='sample'>";
-echo "<tr>";
-echo "<th>Name</th>";
-echo "<th>Gender</th>";
-echo "<th>Contact Number</th>";
-echo "<th>Email</th>";
-echo "<th>Password</th>";
-echo "<th>Vehicle Plate</th>";
-echo "<th>Capacity</th>";
-echo "<th>Is a driver?</th>";
-echo "</tr>";
-echo "<tr>";
-echo "<td>" . $row[0] . "</td>";
-echo "<td>" . $row[1] . "</td>";
-echo "<td>" . $row[2] . "</td>";
-echo "<td>" . $row[3] . "</td>";
-echo "<td>" . $row[4] . "</td>";
-echo "<td>" . $row[5] . "</td>";
-echo "<td>" . $row[6] . "</td>";
-echo "<td>" . $row[7] . "</td>";
-echo "</tr>";
-echo "</table>";
-?>
-
-<h2>New:</h2>
-
+<body>
+<h2>Edit User</h2>
 <form action="" method="post">
-
-<div>
-
-<strong>Name: *</strong> <input type="text" name="name" /><br/></br>
-
-<strong>Gender: *</strong></br> 
-<input type="radio" name="gender" value="Male"/>Male
-<input type="radio" name="gender" value="Female"/>Female
-<br/></br>
-
-<strong>Contact Number: *</strong> <input type="text" name="contact_number" /><br/></br>
-
-<strong>Email: *</strong> <input type="text" name="email" /><br/></br>
-
-<strong>Password: *</strong> <input type="text" name="password" /><br/></br>
-
-<strong>Vehicle Plate: *</strong> <input type="text" name="vehicle_plate" /><br/></br>
-
-<strong>Capacity: *</strong> <input type="text" name="capacity" /><br/></br>
-
-<strong>Is a driver?: *</strong></br> 
-<input type="radio" name="isDriver" value="Yes"/>Yes
-<input type="radio" name="isDriver" value="No"/>No
-<br/></br>
-
-<p>* required</p>
+    <div class='form-group'>
+        <label for="inputName">Name: </label>
+        <?php echo "<input type='text' name='name' class='form-control' id='inputName' value='" . $row[0] . "' required>";?>
+    </div>
+    <div class='form-group'>
+        <label for="inputGender">Gender: </label>
+        <?php 
+            if($row[1] == "Male"){
+                echo "<input type=\"radio\" name=\"gender\" value = \"Male\" checked/>Male";
+                echo "<input type=\"radio\" name=\"gender\" value = \"Female\"/>Female";
+            }else{
+                echo "<input type=\"radio\" name=\"gender\" value = \"Male\" />Male";
+                echo "<input type=\"radio\" name=\"gender\" value = \"Female\" checked/>Female";
+            }
+        ?>
+    </div>
+    <div class='form-group'>
+        <label for="inputNumber">Contact Number: </label>
+        <?php echo "<input type='text' pattern=\"^[89][0-9]{7}$\" title=\"Contact number starts with a 8 or 9, and must be 8 digits long.\" name='contact_number' class='form-control' id='inputNumber' placeholder = 'Enter contact number' value='" . $row[2] . "' required>";?>
+    </div>
+    <div class='form-group'>
+        <label for="inputEmail">Email: </label>
+        <?php echo "<input type='email' name='email' class='form-control' id='inputEmail' value='" . $row[3] . "' required>";?>
+        <span style='color:red'><?php echo $emailError;?></span>
+    </div>
+    <div class='form-group'>
+        <label for="inputPassword">Password: </label>
+        <?php echo "<input type='text' name='password' class='form-control' id='inputPassword' value='" . $row[4] . "' required>";?>
+    </div>
+    <div class='form-group'>
+        <label for="inputDriver">Is a driver? </label>
+        <?php 
+            if($row[7] == "t"){
+                echo "<input type=\"radio\" name=\"isDriver\" value = \"t\" checked/>Yes";
+                echo "<input type=\"radio\" name=\"isDriver\" value = \"n\"/>No";
+            }else{
+                echo "<input type=\"radio\" name=\"isDriver\" value = \"t\"/>Yes";
+                echo "<input type=\"radio\" name=\"isDriver\" value = \"n\" checked/>No";
+            }
+        ?>
+    </div>
+    <div class='form-group'>
+        <label for="inputDriver">Vehicle Plate: </label>
+        <?php 
+            if($row[7] == "t"){
+                echo "<input type=\"text\" name=\"vehicle_plate\" pattern='^S[A-Z]{1,2}[0-9]{1,4}[A-Z]$' class='form-control' title='Some example: SGE3213Z, SH123D' value = \"$row[5]\"/>";
+            }else{
+                echo "<input type=\"text\" name=\"vehicle_plate\" pattern='^S[A-Z]{1,2}[0-9]{1,4}[A-Z]$' class='form-control' title='Some example: SGE3213Z, SH123D'/>";
+            }
+        ?>
+        <span style='color:red'><?php echo $vehiclePlateError;?></span>
+    </div>
+    <div class='form-group'>
+        <label for="inputCapacity">Capacity: </label>
+        <?php 
+            if($row[7] == "t"){
+                echo "<input type=\"number\" name=\"capacity\" min='3' max='7' id='inputCapacity' class='form-control' value = \"$row[6]\"/>";
+            }else{
+                echo "<input type=\"number\" name=\"capacity\" min='3' max='7' id='inputCapacity' class='form-control'/>";
+            }
+        ?>
+    </div>
 
 <input type="submit" name="submit" value="Submit">
 
