@@ -1,11 +1,9 @@
 <?php  
 include("header.php");
 
-$error1="";
-$error2="";
+$emailError="";
+$passwordError="";
 
-if (!$db) 
-    echo "not connected";
 if (isset($_POST['submit'])){
     $email = $_POST['email'];
     $password = $_POST['password'];
@@ -13,23 +11,18 @@ if (isset($_POST['submit'])){
     $result = pg_query_params($db, 'SELECT password, is_admin FROM useraccount WHERE email= $1', array($email)); 
     $row = pg_fetch_array($result);
 
-    if (!isset($row[0])){
-        $error1 = "Email is invalid!";
-    } else {
-        $verify = $password == $row[0];
-        $isAdmin = $row[1];
-
-        if ($verify) {
-            $_SESSION['user']=$email;
+    $error = pg_last_error($db);
+    if (!isset($row[0])) {
+        $emailError = 'There is no such email in use.';
+    } else if(!($password == $row[0])){
+        $passwordError="Wrong password!";
+    }else{
+        if($row[1] == "t"){
             $_SESSION['isAdmin']=$isAdmin;
-            echo "password is valid";
-            if ($isAdmin != 'f') {
-                header("Location: adminPage.php");
-            } else {
-                header("Location: userPage.php");
-            }		
-        } else{
-            $error2 = "Password is invalid!";
+            header("Location: adminPage.php");
+        }else{
+            $_SESSION['user']=$email;
+            header("Location: userPage.php");
         }
     }
 }
@@ -47,14 +40,16 @@ if (isset($_POST['submit'])){
 <body>
     <h2>Login Below</h2>
     <form method="post" name="form" action="login.php">
-        Email:<br>
-        <input type="text" name="email">
-        <span><?php if(isset($error1)) {echo $error1; } ?></span>
-        <br>
-        Password:<br>
-        <input type="password" name="password">
-        <span><?php if(isset($error2) && !isset($error1)) {echo $error2; } ?></span>
-        <br><br>
+        <div class='form-group'>
+            <label for="inputEmail">Email: </label>
+            <input type="email" name="email" class="form-control" id="inputEmail" required>
+            <span style="color:red"><?php echo $emailError;?></span>
+        </div>
+        <div class='form-group'>
+            <label for="inputPassword">Password: </label>
+            <input type="password" name="password" class="form-control" id="inputPassword" required>
+            <span style="color:red"><?php echo $passwordError;?></span>
+        </div>
         <input type="submit" name="submit">
     </form>
 </body>
