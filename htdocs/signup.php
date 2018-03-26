@@ -19,8 +19,8 @@ if (isset($_POST['submit'])){
     $gender = $_POST['gender'];
     $isDriver = $_POST['isDriver'];
 
-    if($isDriver = "No"){
-        $vehicle_plate = NULL;
+    if($isDriver == "No"){
+        $vehiclePlate = NULL;
         $capacity = NULL;
     }
     
