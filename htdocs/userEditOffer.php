@@ -10,8 +10,23 @@ $locations = pg_query($db, "SELECT * FROM locations");
 $advertisementID = $_GET['id'];
 $email = $_SESSION['user'];
 $creator = pg_query($db, "SELECT email_of_driver FROM advertisements WHERE advertisementid = '" . $advertisementID . "';");
-if(pg_fetch_array($creator)[0] != $email || is_null($advertisementID)){
-	header("Location: error.php");
+if(is_null($advertisementID)){
+	$message = "Oops something went wrong!";
+	echo "<script type='text/javascript'>alert('$message');
+		window.location.href='userPage.php';
+	</script>";
+}
+if(pg_num_rows($creator == 0)){
+	$message = "Advertisement not found!";
+	echo "<script type='text/javascript'>alert('$message');
+		window.location.href='userPage.php';
+	</script>";	
+}
+if(pg_fetch_array($creator)[0] != $email){
+	$message = "You are not authorized to view this page!";
+	echo "<script type='text/javascript'>alert('$message');
+		window.location.href='userPage.php';
+	</script>";
 }
 
 $result = pg_query($db, "SELECT start_location, end_location, date_of_pickup, time_of_pickup, self_select FROM advertisements WHERE advertisementid = '" . $advertisementID . "';");
@@ -79,7 +94,7 @@ echo "</select><br/>";
 
 <strong>Date Of Pickup: *</strong> <input type="date" name="date_of_pickup" value = "<?php echo $adv_row[2]?>"/><br/>
 
-<strong>Time Of Pickup: *</strong> <input type="time" name="time_of_pickup" value = "<?php echo $adv_row[3]?>"/><br/>
+<strong>Time Of Pickup: *</strong> <input type="time" name="time_of_pickup" value = "<?php echo $adv_row[3]?>" step = "900"/><br/>
 
 <strong> Would you like to select your own riders?: </strong> 
 <input type = "hidden" value = "f" name = "self_select">

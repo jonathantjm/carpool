@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS useraccount;
-DROP TABLE IF EXISTS advertisements;
 DROP TABLE IF EXISTS bid;
+DROP TABLE IF EXISTS advertisements;
+DROP TABLE IF EXISTS useraccount;
 DROP TABLE IF EXISTS locations;
 
 CREATE TABLE useraccount (
@@ -15,7 +15,7 @@ CREATE TABLE useraccount (
     is_admin BOOLEAN DEFAULT FALSE,
     CHECK((is_driver = FALSE AND vehicle_plate IS NULL AND capacity IS NULL) OR (is_driver = TRUE AND vehicle_plate IS NOT NULL AND capacity IS NOT NULL)),
     CHECK(capacity > 0),
-    CHECK(gender == 'Male' OR gender == 'Female')
+    CHECK(gender = 'Male' OR gender = 'Female')
 );
 
 CREATE TABLE locations(
@@ -34,7 +34,7 @@ CREATE TABLE advertisements (
     self_select BOOLEAN DEFAULT TRUE,
     CHECK(start_location != end_location),
     CHECK(date_of_pickup >= current_date),
-    CHECK((date_of_pickup == current_date AND time_of_pickup > current_time) OR (date_of_pickup > current_date))
+    CHECK((date_of_pickup = current_date AND time_of_pickup > current_time) OR (date_of_pickup > current_date))
 );
 
 CREATE TABLE bid (

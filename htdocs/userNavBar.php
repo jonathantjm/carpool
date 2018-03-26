@@ -4,7 +4,7 @@
 		<nav class="navbar navbar-inverse">
 			<div class="container-fluid">
 				<div class="navbar-header">
-				  <a class="navbar-brand" href="adminPage.php"><i class="fas fa-car"></i>Car Pool</a>
+				  <a class="navbar-brand" href="userPage.php"><i class="fas fa-car"></i>Car Pool</a>
 				</div>
 				<div>
 					<ul class="nav navbar-nav">

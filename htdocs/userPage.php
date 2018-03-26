@@ -1,6 +1,9 @@
 <?php
 include("header.php");
 include("userNavBar.php");
+
+$driver = pg_query($db, "SELECT is_driver FROM useraccount
+	WHERE email = '" . $_SESSION['user'] . "';"); 
 ?>
 
 <script type="text/javascript">
@@ -20,9 +23,18 @@ include("userNavBar.php");
 <body>
 	<div>
 		<h2>User Profile</h2>
-		<button type="button" onclick="bid_Display()">See bids</button>
-		<button type="button" onclick="offer_Display()">See offers</button>
-		<button type="button" onclick="accept_Display()">Accept bids</button>
+		<table cellpadding = "10">
+			<tr>
+			<td><button type="button" onclick="bid_Display()">Manage your bids</button></td>
+			<?php
+
+			if (pg_fetch_assoc($driver)['is_driver'] == 't'){
+				echo "<td><button type=\"button\" onclick=\"offer_Display()\">Manage your offers</button></td>";
+				echo "<td><button type=\"button\" onclick=\"accept_Display()\">Accept bids</button></td>";
+			}
+			?>
+			</tr>
+		</table>
 	</div>
 </body>
 

@@ -9,8 +9,30 @@ $advertisement = pg_query($db, "SELECT * FROM advertisements, useraccount
 	WHERE email_of_driver = email
 	AND   advertisementid = " . $advertisementID . ";"); 
 
+//If no advertisement id found
 if (pg_num_rows($advertisement) == 0){
-	header("Location: error.php");
+	$message = "An error occured!";
+	echo "<script type='text/javascript'>alert('$message');
+		window.location.href='userPage.php';
+	</script>";
+}
+
+$advertisement_result = pg_fetch_assoc($advertisement);
+
+//If advertisement already closed
+if ($advertisement_result['closed'] == 't'){
+	$message = "Offer has already been closed!";
+	echo "<script type='text/javascript'>alert('$message');
+		window.location.href='userPage.php';
+	</script>";
+}
+
+//If bidder is also owner of offer
+if ($advertisement_result['email'] == $email){
+	$message = "You cannot bid for your own offer!";
+	echo "<script type='text/javascript'>alert('$message');
+		window.location.href='userPage.php';
+	</script>";
 }
 
 $multiple_bid_check = pg_query_params($db, "SELECT * FROM bid
@@ -19,8 +41,12 @@ $multiple_bid_check = pg_query_params($db, "SELECT * FROM bid
 	", array($email, $advertisementID)
 );
 
+//If already bid for this offer
 if (pg_num_rows($multiple_bid_check) > 0){
-	header("Location: error.php");
+	$message = "You've already submitted a bit for this offer!";
+	echo "<script type='text/javascript'>alert('$message');
+		window.location.href='userPage.php';
+	</script>";
 }
 
 if (isset($_POST['submit'])) {
@@ -48,30 +74,29 @@ if (isset($_POST['submit'])) {
 <table>
 
 <?php
-	$row = pg_fetch_assoc($advertisement);
 	echo "<tr>" ;
 		echo "<td> Start Location: </td>";
-		echo "<td>" . $row['start_location'] . "</td>";
+		echo "<td>" . $advertisement_result['start_location'] . "</td>";
 	echo "</tr>";
 	echo "<tr>" ;
 		echo "<td> End Location: </td>";
-		echo "<td>" . $row['end_location'] . "</td>";
+		echo "<td>" . $advertisement_result['end_location'] . "</td>";
 	echo "</tr>";
 	echo "<tr>" ;
 		echo "<td> Pick Up Date: </td>";
-		echo "<td>" . $row['date_of_pickup'] . "</td>";
+		echo "<td>" . $advertisement_result['date_of_pickup'] . "</td>";
 	echo "</tr>";
 	echo "<tr>" ;
 		echo "<td> Pick Up Time: </td>";
-		echo "<td>" . $row['time_of_pickup'] . "</td>";
+		echo "<td>" . $advertisement_result['time_of_pickup'] . "</td>";
 	echo "</tr>";
 	echo "<tr>" ;
 		echo "<td> Driver Gender: </td>";
-		echo "<td>" . $row['gender'] . "</td>";
+		echo "<td>" . $advertisement_result['gender'] . "</td>";
 	echo "</tr>";
 	echo "<tr>" ;
 		echo "<td> Driver Capacity: </td>";
-		echo "<td>" . $row['capacity'] . "</td>";
+		echo "<td>" . $advertisement_result['capacity'] . "</td>";
 	echo "</tr>";
 ?>
 

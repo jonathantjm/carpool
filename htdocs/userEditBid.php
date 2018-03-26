@@ -5,9 +5,25 @@ include("userNavBar.php");
 $advertisementID = $_GET['id'];
 $email = $_SESSION['user'];
 $creator = pg_query($db, "SELECT email FROM bid WHERE advertisementid = '" . $advertisementID . "';");
-if(pg_fetch_array($creator)[0] != $email || is_null($advertisementID)){
-	header("Location: error.php");
+if(is_null($advertisementID)){
+	$message = "Oops something went wrong!";
+	echo "<script type='text/javascript'>alert('$message');
+		window.location.href='userPage.php';
+	</script>";
 }
+if(pg_num_rows($creator == 0)){
+	$message = "Advertisement not found!";
+	echo "<script type='text/javascript'>alert('$message');
+		window.location.href='userPage.php';
+	</script>";	
+}
+if(pg_fetch_array($creator)[0] != $email){
+	$message = "You are not authorized to view this page!";
+	echo "<script type='text/javascript'>alert('$message');
+		window.location.href='userPage.php';
+	</script>";
+}
+
 
 $result = pg_query($db, "SELECT * FROM bid 
 	WHERE advertisementid = '" . $advertisementID . "'
@@ -16,6 +32,13 @@ $result = pg_query($db, "SELECT * FROM bid
 $advertisement = pg_query($db, "SELECT * FROM advertisements, useraccount
 	WHERE email_of_driver = email
 	AND   advertisementid = " . $advertisementID . ";"); 
+
+if (pg_fetch_assoc($advertisement)['closed'] == 't'){
+	$message = "Offer has already been closed!";
+	echo "<script type='text/javascript'>alert('$message');
+		window.location.href='userPage.php';
+	</script>";
+}
 
 $row = pg_fetch_assoc($result);
 

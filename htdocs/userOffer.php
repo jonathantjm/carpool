@@ -12,11 +12,10 @@ $result = pg_query($db, "SELECT * FROM advertisements
 
 <h1><b>Your Offers:</b></h1>
 
-<table>
-
 <?php 
 
-echo "<tr>
+if (pg_num_rows($result) > 0){
+	echo "<table cellpadding = \"10\"><tr>
 		<th>Start Location</th>
 		<th>End Location</th>
 		<th>Pick up date</th>
@@ -26,8 +25,8 @@ echo "<tr>
 		<th>Date and Time Created</th>
 	</tr>";
 
-while($row = pg_fetch_array( $result )) { 
-	echo "<tr>";
+	while($row = pg_fetch_array( $result )) { 
+		echo "<tr>";
 		echo "<td>" . $row[2] . "</td>";
 		echo "<td>" . $row[3] . "</td>";
 		echo "<td>" . $row[5] . "</td>";
@@ -47,14 +46,18 @@ while($row = pg_fetch_array( $result )) {
 		echo "<td>" . $row[4] . "</td>";
 		echo "<td><a href='userDeleteOffer.php?id=".$row[0]."'>Delete</a></td>";
 		echo "<td><a href='userEditOffer.php?id=".$row[0]."'>Edit</a></td>";
-	echo "</tr>";
+		echo "</tr>";
+	}
+	echo "</table>";
+}
+else{
+	echo "<br>You have not made any bids!<br><br>";
 }
 
-?>
-	
-</table>
 
-<p>Add a new bid</p>
+?>
+
+<h2>Add a new bid</h2>
 
 <p><a href="userCreateOffer.php">New bid</a></p>
 

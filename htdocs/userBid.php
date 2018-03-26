@@ -25,7 +25,7 @@ while($row = pg_fetch_array( $locations )) {
 }
 
 
-echo "<strong>Start Location: *</strong>";
+echo "<strong>Start Location: </strong>";
 //echo "<select name= 'start_location' />";
 //echo "<option value= '' selected disabled hidden /> Choose here </option>";
 echo "<select name= \"start_location\" />";
@@ -35,7 +35,7 @@ foreach ($locations_array as $location){
 }
 echo "</select><br/>";
 
-echo "<strong>End Location: *</strong>";
+echo "<strong>End Location: </strong>";
 //echo "<select name='end_location' />";
 //echo "<option value= '' selected disabled hidden /> Choose here </option>";
 echo "<select name=\"end_location\" />";
@@ -47,9 +47,9 @@ echo "</select><br/>";
 
 ?>
 
-<strong>Date Of Pickup: *</strong> <input type="date" name="date_of_pickup" /><br/>
+<strong>Date Of Pickup: </strong> <input type="date" name="date_of_pickup"><br/>
 
-<strong>Time Range: *</strong> <input type="time" name="start_time" /> <input type="time" name="end_time" /><br/>
+<strong>Time Range: </strong> <input type="time" name="start_time" step = "900"> <input type="time" name="end_time" step = "900"/><br/>
 
 <input type="submit" name="button" value="Submit">
 
@@ -62,18 +62,33 @@ if(isset($_POST['button'])){
 	$start_time = $_POST['start_time'];
 	$end_time = $_POST['end_time'];
 
-	$search_results = pg_query_params("SELECT * FROM advertisements 
-		WHERE 	start_location = $1
-		AND 	end_location = $2
-		AND 	date_of_pickup = $3
-		AND 	time_of_pickup >= $4
-		AND 	time_of_pickup <= $5
-		AND 	closed = false
+	$query_string = "SELECT * FROM advertisements WHERE ";
+
+	if($start_location != ""){
+		$query_string = $query_string . "start_location = '" . $start_location . "' AND ";
+	}
+	if($end_location != ""){
+		$query_string = $query_string . "end_location = '" . $end_location . "' AND ";
+	}
+	if($date_of_pickup != ""){
+		$query_string = $query_string . "date_of_pickup = '" . $date_of_pickup . "' AND ";
+	}
+	if($start_time != ""){
+		$query_string = $query_string . "time_of_pickup >= '" . $start_time . "' AND ";
+	}
+	if($end_time != ""){
+		$query_string = $query_string . "time_of_pickup <= '" . $end_time . "' AND ";
+	}
+
+	$query_string = $query_string . "closed = false
 		AND 	advertisementid NOT IN (
 				SELECT advertisementid from bid
-				WHERE  email = $6);"
-		, array($start_location, $end_location, $date_of_pickup, $start_time, $end_time, $email)
-	);
+				WHERE  email = '" . $_SESSION['user'] . "' 
+				UNION 
+				SELECT advertisementid from advertisements
+				WHERE  email_of_driver = '" . $_SESSION['user'] . "');";
+
+	$search_results = pg_query($query_string);
 
 	
 	if(pg_num_rows($search_results) > 0){

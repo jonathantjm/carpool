@@ -66,7 +66,7 @@ echo "</select><br/>";
 
 <strong>Date Of Pickup: *</strong> <input type="date" name="date_of_pickup" /><br/>
 
-<strong>Time Of Pickup: *</strong> <input type="time" name="time_of_pickup" /><br/>
+<strong>Time Of Pickup: *</strong> <input type="time" name="time_of_pickup" step = "900"/><br/>
 
 <strong> Would you like to select your own riders?: </strong>
 <input type = "hidden" value = "f" name = "self_select">
