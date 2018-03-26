@@ -12,7 +12,10 @@ CREATE TABLE useraccount (
     vehicle_plate VARCHAR(9) UNIQUE,
     capacity INTEGER,
     is_driver BOOLEAN DEFAULT FALSE,
-    is_admin BOOLEAN DEFAULT FALSE
+    is_admin BOOLEAN DEFAULT FALSE,
+    CHECK((is_driver = FALSE AND vehicle_plate IS NULL AND capacity IS NULL) OR (is_driver = TRUE AND vehicle_plate IS NOT NULL AND capacity IS NOT NULL)),
+    CHECK(capacity > 0),
+    CHECK(gender == 'Male' OR gender == 'Female')
 );
 
 CREATE TABLE locations(
@@ -21,14 +24,17 @@ CREATE TABLE locations(
 
 CREATE TABLE advertisements (
     advertisementID INTEGER PRIMARY KEY,
-    email_of_driver VARCHAR(40) REFERENCES useraccount(email),
+    email_of_driver VARCHAR(40) REFERENCES useraccount(email) ON UPDATE CASCADE ON DELETE CASCADE,
     start_location VARCHAR(40) NOT NULL REFERENCES locations(location),
     end_location VARCHAR(40) NOT NULL REFERENCES locations(location),
     creation_date_and_time TIMESTAMP NOT NULL,
     date_of_pickup DATE NOT NULL,
     time_of_pickup TIME NOT NULL,
     closed BOOLEAN DEFAULT FALSE,
-    self_select BOOLEAN DEFAULT TRUE
+    self_select BOOLEAN DEFAULT TRUE,
+    CHECK(start_location != end_location),
+    CHECK(date_of_pickup >= current_date),
+    CHECK((date_of_pickup == current_date AND time_of_pickup > current_time) OR (date_of_pickup > current_date))
 );
 
 CREATE TABLE bid (
@@ -38,8 +44,9 @@ CREATE TABLE bid (
     price NUMERIC(5, 2) NOT NULL,
     creation_date_and_time TIMESTAMP NOT NULL,
     PRIMARY KEY (email, advertisementID),
-    FOREIGN KEY (email) REFERENCES useraccount(email),
-    FOREIGN KEY (advertisementID) REFERENCES advertisements(advertisementID)
+    FOREIGN KEY (email) REFERENCES useraccount(email) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (advertisementID) REFERENCES advertisements(advertisementID) ON UPDATE CASCADE ON DELETE CASCADE,
+    CHECK(price > 0)
 );
 
 INSERT INTO locations VALUES
