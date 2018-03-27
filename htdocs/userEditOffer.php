@@ -32,6 +32,16 @@ if(pg_fetch_array($creator)[0] != $email){
 $result = pg_query($db, "SELECT start_location, end_location, date_of_pickup, time_of_pickup, self_select FROM advertisements WHERE advertisementid = '" . $advertisementID . "';");
 $adv_row = pg_fetch_array($result);
 
+$locationError = '';
+$dateError = '';
+$timeError = '';
+
+$start_location = $adv_row[0];
+$end_location = $adv_row[1];
+$date_of_pickup = $adv_row[2];
+$time_of_pickup = $adv_row[3];
+$self_select = $adv_row[4];
+
 if (isset($_POST['submit'])) {
 	
 	$start_location = $_POST['start_location'];
@@ -44,9 +54,23 @@ if (isset($_POST['submit'])) {
 		WHERE advertisementid = $6',
 		array($start_location, $end_location, $date_of_pickup, $time_of_pickup, $self_select, $advertisementID));
 
-	echo pg_last_error($db);
+	$error = pg_last_error($db);
 
-	header("Location: userOffer.php");
+	if ($error == ''){
+		header("Location: userOffer.php");	
+	}
+	else if(strpos($error, 'same_start_end_location') !== false){		
+		$locationError = 'Cannot have the same start and end location!';
+	}
+	else if(strpos($error, 'pickup_date_before_current_date') !== false){
+		$dateError = 'Date cannot be before current date!';
+	}
+	else if(strpos($error, 'pickup_time_before_current_time') !== false){
+		$timeError = 'Time is before current time!';
+	}
+	else {
+		echo $error;
+	}
 
 }
 
@@ -54,52 +78,66 @@ if (isset($_POST['submit'])) {
 
 <html>
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
 <h2>New:</h2>
 <form action="" method="post">
 
-<div>
-
-<?php
-$locations_array = array();
-while($row = pg_fetch_array( $locations )) {
-	$locations_array[] = $row[0];
-}
-
-
-echo "<strong>Start Location: *</strong>";
-echo "<select name= \"start_location\" />";
-foreach ($locations_array as $location){
-	if ($location == $adv_row[0]){
-		echo "<option value =\"".$location."\" selected>".$location."</option>";
+	<?php
+	$locations_array = array();
+	while($row = pg_fetch_array( $locations )) {
+		$locations_array[] = $row[0];
 	}
-	else{
-		echo "<option value =\"".$location."\" >".$location."</option>";
+
+	echo "<div class = \"form-group\">";
+	echo "<lael for =\"input_start_location\">Start Location: *</label>";
+	echo "<select class = \"form-control\" id = \"input_start_location\" name= \"start_location\" required/>";
+	foreach ($locations_array as $location){
+		if ($start_location == $location){
+			echo "<option value ='".$location."' selected>".$location."</option>";
+		}
+		else{
+			echo "<option value ='".$location."' >".$location."</option>";
+		}
 	}
-}
-echo "</select><br/>";
+	echo "</select><br/>";
+	echo "</div>";
 
-echo "<strong>End Location: *</strong>";
-echo "<select name=\"end_location\" />";
-foreach ($locations_array as $location){
-	if ($location == $adv_row[1]){
-		echo "<option value =\"".$location."\" selected>".$location."</option>";
+	echo "<div class = \"form-group\">";
+	echo "<lael for =\"input_end_location\">End Location: *</label>";
+	echo "<select class = \"form-control\" id = \"input_end_location\" name= \"end_location\" required/>";
+	foreach ($locations_array as $location){
+		if ($end_location == $location){
+			echo "<option value ='".$location."' selected>".$location."</option>";
+		}
+		else{
+			echo "<option value ='".$location."' >".$location."</option>";
+		}
 	}
-	else{
-		echo "<option value =\"".$location."\" >".$location."</option>";
-	}
-}
-echo "</select><br/>";
+	echo "</select><br/>";
+	echo "<span style=\"color:red\">" . $locationError . "</span>";
+	echo "</div>";
+	?>
 
-?>
+	<div class = "form-group">
+	<label for = "date_input">Date Of Pickup: *</label>
+	<input type="date" class = "form-control" id = "date_input" name="date_of_pickup" value = <?php echo $date_of_pickup?> required/><br/>
+	<span style="color:red"><?php echo $dateError;?></span>
+	</div>
 
-<strong>Date Of Pickup: *</strong> <input type="date" name="date_of_pickup" value = "<?php echo $adv_row[2]?>"/><br/>
-
-<strong>Time Of Pickup: *</strong> <input type="time" name="time_of_pickup" value = "<?php echo $adv_row[3]?>" step = "900"/><br/>
+	<div class = "form-group">
+	<label for = "time_input">Time Of Pickup: *</label>
+	<input type="time" class = "form-control" id = "time_input" name="time_of_pickup" step = "900" value = <?php echo $time_of_pickup?> required/><br/>
+	<span style="color:red"><?php echo $timeError;?></span>
+	</div>
 
 <strong> Would you like to select your own riders?: </strong> 
 <input type = "hidden" value = "f" name = "self_select">
 <?php 
-if ($adv_row[4] == t){
+if ($self_select == t){
 	echo "<input type = \"checkbox\" name = \"self_select\" value = \"t\" checked><br/>";
 }
 else{
@@ -110,8 +148,6 @@ else{
 <p>* required</p>
 
 <input type="submit" name="submit" value="Submit">
-
-</div>
 
 </form>
 

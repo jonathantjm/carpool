@@ -51,15 +51,15 @@ if (pg_num_rows($result) > 0){
 	echo "</table>";
 }
 else{
-	echo "<br>You have not made any bids!<br><br>";
+	echo "<br>You have not made any offers!<br><br>";
 }
 
 
 ?>
 
-<h2>Add a new bid</h2>
+<h2>Add a new offer</h2>
 
-<p><a href="userCreateOffer.php">New bid</a></p>
+<p><a href="userCreateOffer.php">New offer</a></p>
 
 </body>
 

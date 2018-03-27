@@ -23,7 +23,7 @@ CREATE TABLE locations(
 );
 
 CREATE TABLE advertisements (
-    advertisementID INTEGER PRIMARY KEY,
+    advertisementID BIGSERIAL PRIMARY KEY,
     email_of_driver VARCHAR(40) REFERENCES useraccount(email) ON UPDATE CASCADE ON DELETE CASCADE,
     start_location VARCHAR(40) NOT NULL REFERENCES locations(location),
     end_location VARCHAR(40) NOT NULL REFERENCES locations(location),
@@ -32,9 +32,9 @@ CREATE TABLE advertisements (
     time_of_pickup TIME NOT NULL,
     closed BOOLEAN DEFAULT FALSE,
     self_select BOOLEAN DEFAULT TRUE,
-    CHECK(start_location != end_location),
-    CHECK(date_of_pickup >= current_date),
-    CHECK((date_of_pickup = current_date AND time_of_pickup > current_time) OR (date_of_pickup > current_date))
+    CONSTRAINT same_start_end_location CHECK(start_location != end_location),
+    CONSTRAINT pickup_date_before_current_date CHECK(date_of_pickup >= current_date),
+    CONSTRAINT pickup_time_before_current_time CHECK((date_of_pickup = current_date AND time_of_pickup > current_time) OR (date_of_pickup > current_date))
 );
 
 CREATE TABLE bid (

@@ -98,7 +98,7 @@ if (isset($_POST['submit'])) {
 
 <form action="" method="post">
 
-<strong>Price: *</strong> <input type="number" name="price" value = "<?php echo $row['price']?>"/><br/>
+<strong>Price: *</strong> <input type="number" name="price" value = "<?php echo $row['price']?>" required/><br/>
 
 <input type="submit" name="submit" value="Submit">
 

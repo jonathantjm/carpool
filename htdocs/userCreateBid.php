@@ -106,7 +106,7 @@ if (isset($_POST['submit'])) {
 
 <form action="" method="post">
 
-<strong>Enter your bid: </strong> <input type="number" name="price" /><br/>
+<strong>Enter your bid: </strong> <input type="number" name="price" required /><br/>
 
 <input type="submit" name="submit" value="Submit">
 
