@@ -32,7 +32,7 @@ if (isset($_POST['submit'])) {
         $capacity = NULL;
     }
 
-    pg_query_params($db, 'INSERT INTO useraccount VALUES ($1, $2, $3, $4, $5, $6, $7, $8, false)', array($name, $gender, $contact_number, $email, $password, $vehicle_plate, $capacity, $isADriver));
+    $tempResult = pg_query_params($db, 'SELECT add_user($1, $2, $3, $4, $5, $6, $7, $8, false)', array($name, $gender, $contact_number, $email, $password, $vehicle_plate, $capacity, $isADriver));
 
     $row[0] = $name;
     $row[1] = $contact_number;
@@ -40,12 +40,12 @@ if (isset($_POST['submit'])) {
     $row[3] = $password;
     $row[4] = $vehicle_plate;
     $row[5] = $capacity;
+    $result = pg_fetch_array($tempResult);
 
-    $error = pg_last_error($db);
-    if (preg_match('/email/i', $error)) {
-        $emailError = 'Email is already in use.';
-    } else if (preg_match('/vehicle_plate/i', $error)) {
-        $vehiclePlateError = 'Vehicle plate number is already in use.';
+    if (preg_match('/Email/i', $result[0])) {
+        $emailError = $result[0];
+    } else if (preg_match('/Plate/i', $result[0])) {
+        $vehiclePlateError = $result[0];
     } else {
         header("Location: adminUser.php");
     }
@@ -113,7 +113,7 @@ if (isset($_POST['submit'])) {
         </div>
         <div class="form-group">
                 <label for="inputCapacity">Capacity of vehicle</label>
-                <input type="number" name="capacity" min="3" max="7" class="form-control" id="inputCapacity" placeholder="Enter the capacity of your vehicle" value="<?php echo $row[5]; ?>" required>
+                <input type="number" name="capacity" min="1" max="7" class="form-control" id="inputCapacity" placeholder="Enter the capacity of your vehicle" value="<?php echo $row[5]; ?>" required>
         </div>
 <input type="submit" name="submit" value="Submit">
 </form>

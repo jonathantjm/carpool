@@ -14,6 +14,9 @@ if($isAdmin == 'f') {
 
 $locations = pg_query($db, "SELECT * FROM locations"); 
 
+$locationError =  '';
+$dateError = '';
+$timeError = '';
 $advertisementID = $_GET['id'];
 $result = pg_query_params($db, 'SELECT * FROM advertisements WHERE advertisementID = $1', array($advertisementID));
 $adv_row = pg_fetch_array($result);
@@ -36,10 +39,21 @@ if (isset($_POST['submit'])) {
     $adv_row[7] = $newStatus;
     $adv_row[8] = $newSelect;
 
-    if (preg_match('/advertisementid/i', pg_last_error($db))) {
-        echo 'Advertisement ID does not exist.';		
-    } else {
-        header("Location: adminOffer.php");
+    $error =  pg_last_error($db);
+    if ($error == ''){
+        header("Location: adminOffer.php");	
+    }
+    else if(strpos($error, 'same_start_end_location') !== false){		
+        $locationError = 'Cannot have the same start and end location!';
+    }
+    else if(strpos($error, 'pickup_date_before_current_date') !== false){
+        $dateError = 'Date cannot be before current date!';
+    }
+    else if(strpos($error, 'pickup_time_before_current_time') !== false){
+        $timeError = 'Time is before current time!';
+    }
+    else {
+        echo $error;
     }
 }
 
@@ -79,15 +93,19 @@ foreach ($locations_array as $location){
     }
 }
 echo "</select><br/></br>";
+echo "<span style=\"color:red\">" . $locationError . "</span>";
+echo "</div>";
 
 ?>
     <div class='form-group'>
         <label for="inputPickupTime">Time of pick-up: </label>
         <?php echo "<input type='time' name='time_of_pickup' class='form-control' id='inputPickupTime' value='" . $adv_row[6] . "' required>";?>
+        <span style="color:red"><?php echo $timeError;?></span>
     </div>
     <div class='form-group'>
         <label for="inputPickupDate">Date of pick-up: </label>
         <?php echo "<input type='date' name='date_of_pickup' class='form-control' id='inputPickupDate' value='" . $adv_row[5] . "' required>";?>
+        <span style="color:red"><?php echo $dateError;?></span>
     </div>
     <div class='form-group'>
         <label for="offerStatus">Offer status: </label>

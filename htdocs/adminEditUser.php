@@ -118,9 +118,9 @@ if (isset($_POST['submit'])) {
         <label for="inputCapacity">Capacity: </label>
         <?php 
             if($row[7] == "t"){
-                echo "<input type=\"number\" name=\"capacity\" min='3' max='7' id='inputCapacity' class='form-control' value = \"$row[6]\"/>";
+                echo "<input type=\"number\" name=\"capacity\" min='1' max='7' id='inputCapacity' class='form-control' value = \"$row[6]\"/>";
             }else{
-                echo "<input type=\"number\" name=\"capacity\" min='3' max='7' id='inputCapacity' class='form-control'/>";
+                echo "<input type=\"number\" name=\"capacity\" min='1' max='7' id='inputCapacity' class='form-control'/>";
             }
         ?>
     </div>

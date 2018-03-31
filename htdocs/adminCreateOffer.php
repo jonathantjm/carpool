@@ -13,6 +13,9 @@ if($isAdmin == 'f') {
 
 //Initialize potential errors
 $emailError = "";
+$locationError =  '';
+$dateError = '';
+$timeError = '';
 $row = array('', '', '', '', '', '');
 
 $locations = pg_query($db, "SELECT * FROM locations"); 
@@ -38,10 +41,22 @@ if (isset($_POST['submit'])) {
     $row[5] = $self_select;
 
     $error =  pg_last_error($db);
-    if (preg_match('/email/i', $error)) {
-        $emailError = 'Email does not exist.';
+    if ($error == ''){
+        header("Location: adminOffer.php");	
+    }
+    else if(strpos($error, 'same_start_end_location') !== false){		
+        $locationError = 'Cannot have the same start and end location!';
+    }
+    else if(strpos($error, 'pickup_date_before_current_date') !== false){
+        $dateError = 'Date cannot be before current date!';
+    }
+    else if(strpos($error, 'pickup_time_before_current_time') !== false){
+        $timeError = 'Time is before current time!';
+    }
+    else if (strpos($error, 'email') !== false) {
+        $emailError = 'Account for this email does not exist!';
     } else {
-        header("Location: adminOffer.php");
+        echo $error;
     }
 }
 ?>
@@ -86,15 +101,19 @@ foreach ($locations_array as $location){
     }
 }
 echo "</select><br/></br>";
+echo "<span style=\"color:red\">" . $locationError . "</span>";
+echo "</div>";
 
 ?>
             <div class='form-group'>
                 <label for="inputPickupDate">Date of Pickup: </label>
                 <?php echo "<input type='date' name='date_of_pickup' class='form-control' id='inputPickupDate' value='$row[3]' required>";?>
+                <span style="color:red"><?php echo $dateError;?></span>
             </div>
             <div class='form-group'>
                 <label for="inputPickupTime">Time of Pickup: </label>
                 <?php echo "<input type='time' name='time_of_pickup' class='form-control' id='inputPickupTime' value='" . $row[4] . "' required>";?>
+                <span style="color:red"><?php echo $timeError;?></span>
             </div>
             <div class='form-group'>
             <label for="offerStatus">Driver self-select: </label>

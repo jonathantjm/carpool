@@ -14,7 +14,7 @@ CREATE TABLE useraccount (
     is_driver BOOLEAN DEFAULT FALSE,
     is_admin BOOLEAN DEFAULT FALSE,
     CHECK((is_driver = FALSE AND vehicle_plate IS NULL AND capacity IS NULL) OR (is_driver = TRUE AND vehicle_plate IS NOT NULL AND capacity IS NOT NULL)),
-    CHECK(capacity > 0),
+    CHECK(capacity > 0 AND capacity < 8),
     CHECK(gender = 'Male' OR gender = 'Female')
 );
 
