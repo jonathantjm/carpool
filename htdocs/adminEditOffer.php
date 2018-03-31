@@ -20,7 +20,6 @@ $adv_row = pg_fetch_array($result);
 
 if (isset($_POST['submit'])) {
 
-    $newDateAndTime = $_POST['date_and_time'];
     $startLocation = $_POST['start_location'];
     $endLocation = $_POST['end_location'];
     $pickupTime = $_POST['time_of_pickup'];
@@ -28,11 +27,10 @@ if (isset($_POST['submit'])) {
     $newStatus = $_POST['offer_status'];
     $newSelect = $_POST['select_status'];
 
-    pg_query_params($db, 'UPDATE advertisements SET creation_date_and_time = $2, start_location = $3, end_location = $4, date_of_pickup = $5, time_of_pickup = $6, closed = $7, self_select = $8 WHERE advertisementID = $1', array($advertisementID, $newDateAndTime, $startLocation, $endLocation, $pickupDate, $pickupTime, $newStatus, $newSelect));
+    pg_query_params($db, 'UPDATE advertisements SET start_location = $2, end_location = $3, date_of_pickup = $4, time_of_pickup = $5, closed = $6, self_select = $7 WHERE advertisementID = $1', array($advertisementID, $startLocation, $endLocation, $pickupDate, $pickupTime, $newStatus, $newSelect));
 
     $adv_row[2] = $startLocation;
     $adv_row[3] = $endLocation;
-    $adv_row[4] = $newDateAndTime;
     $adv_row[5] = $pickupDate;
     $adv_row[6] = $pickupTime;
     $adv_row[7] = $newStatus;
@@ -51,11 +49,6 @@ if (isset($_POST['submit'])) {
 <body>
 <h2>Edit Offer</h2>
 <form action="" method="post">
-    <div class='form-group'>
-        <label for="inputDateAndTime">Date and time created: </label>
-        <?php echo "<input type='text' name='date_and_time' class='form-control' id='inputDateAndTime' value='" . $adv_row[4] . "' required>";?>
-    </div>
-
 <?php
 $locations_array = array();
 while($row = pg_fetch_array( $locations )) {
@@ -73,7 +66,7 @@ foreach ($locations_array as $location){
         echo "<option value =\"".$location."\" >".$location."</option>";
     }
 }
-echo "</select><br/>";
+echo "</select><br/></br>";
 
 echo "<strong>End Location: </strong>";
 echo "<select name=\"end_location\" />";
@@ -85,7 +78,7 @@ foreach ($locations_array as $location){
         echo "<option value =\"".$location."\" >".$location."</option>";
     }
 }
-echo "</select><br/>";
+echo "</select><br/></br>";
 
 ?>
     <div class='form-group'>

@@ -10,14 +10,61 @@ if($isAdmin == 'f') {
     window.location.href='login.php';
     </script>";
 }
-
-$result = pg_query($db, 'SELECT * FROM advertisements'); 
+$result;
+$locations = pg_query($db, "SELECT * FROM locations");
+if (isset($_POST['submit'])){
+    $searchTermStart = $_POST['searchForOfferStart'];
+    $searchTermEnd = $_POST['searchForOfferEnd'];
+    $result = pg_query_params($db, 'SELECT * FROM advertisements WHERE start_location = $1 AND end_location = $2', array($searchTermStart, $searchTermEnd));
+} else {
+    $result = pg_query($db, 'SELECT * FROM advertisements'); 
+}
 $counter = 1;
 ?>
 
 <html>
 <body>
-<h1>View Existing Offers Information</h1>
+<h2>View Existing Offers Information</h2>
+<form action='' method='post'>
+    <div class='form-group'>
+        <label>Search for offers based on start and end locations: </label></br>
+    <?php
+        $locations_array = array();
+        while($adv_row = pg_fetch_array( $locations )) {
+            $locations_array[] = $adv_row[0];
+    }
+
+
+    echo "<strong> Start Location: </strong>";
+    echo "<select name= \"searchForOfferStart\" />";
+    foreach ($locations_array as $location){
+        if ($location == $row[1]){
+            echo "<option value =\"".$location."\" selected>".$location."</option>";
+        }
+        else{
+            echo "<option value =\"".$location."\" >".$location."</option>";
+        }
+    }
+    echo "</select>";
+    
+    echo "<strong> End Location: </strong>";
+    echo "<select name=\"searchForOfferEnd\" />";
+    foreach ($locations_array as $location){
+        if ($location == $row[2]){
+            echo "<option value =\"".$location."\" selected>".$location."</option>";
+        }
+        else{
+            echo "<option value =\"".$location."\" >".$location."</option>";
+        }
+    }
+    echo "</select>";
+
+    ?>
+        <input type="submit" name="submit" class='btn btn-primary' value="Search">
+        <a href="adminOffer.php" class='btn btn-primary' role='button'>Refresh?</a>
+    </div>
+</form>
+
 <table class="table table-bordered">
 
 <?php 

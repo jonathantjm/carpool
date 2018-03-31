@@ -67,14 +67,14 @@ if (isset($_POST['submit'])) {
         <?php echo "<input type='text' name='name' class='form-control' id='inputName' value='" . $row[0] . "' required>";?>
     </div>
     <div class='form-group'>
-        <label for="inputGender">Gender: </label>
+        <label for="inputGender">Gender: </label></br>
         <?php 
             if($row[1] == "Male"){
-                echo "<input type=\"radio\" name=\"gender\" value = \"Male\" checked/>Male";
-                echo "<input type=\"radio\" name=\"gender\" value = \"Female\"/>Female";
+                echo " <input type=\"radio\" name=\"gender\" value = \"Male\" checked/> Male ";
+                echo " <input type=\"radio\" name=\"gender\" value = \"Female\"/> Female ";
             }else{
-                echo "<input type=\"radio\" name=\"gender\" value = \"Male\" />Male";
-                echo "<input type=\"radio\" name=\"gender\" value = \"Female\" checked/>Female";
+                echo " <input type=\"radio\" name=\"gender\" value = \"Male\" /> Male ";
+                echo " <input type=\"radio\" name=\"gender\" value = \"Female\" checked/> Female ";
             }
         ?>
     </div>
@@ -92,14 +92,14 @@ if (isset($_POST['submit'])) {
         <?php echo "<input type='text' name='password' class='form-control' id='inputPassword' value='" . $row[4] . "' required>";?>
     </div>
     <div class='form-group'>
-        <label for="inputDriver">Is a driver? </label>
+        <label for="inputDriver">Is a driver? </label></br>
         <?php 
             if($row[7] == "t"){
-                echo "<input type=\"radio\" name=\"isDriver\" value = \"t\" checked/>Yes";
-                echo "<input type=\"radio\" name=\"isDriver\" value = \"n\"/>No";
+                echo "<input type=\"radio\" name=\"isDriver\" value = \"t\" checked/> Yes ";
+                echo "<input type=\"radio\" name=\"isDriver\" value = \"n\"/> No ";
             }else{
-                echo "<input type=\"radio\" name=\"isDriver\" value = \"t\"/>Yes";
-                echo "<input type=\"radio\" name=\"isDriver\" value = \"n\" checked/>No";
+                echo "<input type=\"radio\" name=\"isDriver\" value = \"t\"/> Yes ";
+                echo "<input type=\"radio\" name=\"isDriver\" value = \"n\" checked/> No ";
             }
         ?>
     </div>

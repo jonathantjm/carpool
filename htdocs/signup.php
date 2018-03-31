@@ -81,8 +81,8 @@ if (isset($_POST['submit'])){
         <div class="form-group">
                 <label for="inputGender">Gender:</label>
                 </br>
-                <input type="radio" name="gender" id='inputGender' value="Male" checked/>Male
-                <input type="radio" name="gender" id='inputGender' value="Female"/>Female
+                <input type="radio" name="gender" id='inputGender' value="Male" checked/> Male
+                <input type="radio" name="gender" id='inputGender' value="Female"/> Female
         </div>
         <div class="form-group">
                 <label for="inputNumber">Contact Number</label>
@@ -96,8 +96,8 @@ if (isset($_POST['submit'])){
         <div class="form-group">
                 <label for="inputDriver">Is a driver?</label>
                 </br>
-                <input type="radio" name="isDriver" id="yesDriver" value="Yes" onclick="checkDriver()" checked/>Yes
-                <input type="radio" name="isDriver" id="noDriver" onclick="checkDriver()" value="No"/>No
+                <input type="radio" name="isDriver" id="yesDriver" value="Yes" onclick="checkDriver()" checked/> Yes
+                <input type="radio" name="isDriver" id="noDriver" onclick="checkDriver()" value="No"/> No
         </div>
         <div class="form-group">
                 <label for="inputPlate">Vehicle Plate Number</label>

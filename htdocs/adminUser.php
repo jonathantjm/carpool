@@ -10,14 +10,28 @@ if($isAdmin == 'f') {
     window.location.href='login.php';
     </script>";
 }
-
-$result = pg_query($db, 'SELECT * FROM useraccount'); 
+$result;
+if(isset($_POST['submit'])){
+    $searchTerm = $_POST['searchForUser'];
+    $result = pg_query_params($db, 'SELECT * FROM useraccount WHERE email = $1 OR name = $1', array($searchTerm));
+}else{
+    $result = pg_query($db, 'SELECT * FROM useraccount'); 
+}
 $counter = 1;
 ?>
 
 <html>
 <body>
-<h1 class='text-center'>View Existing User Information</h1>
+<h2>View Existing User Information</h2>
+<form action='' method='post'>
+    <div class='form-group'>
+        <label for='searchForUser'>Search for: </label>
+        <input type='text' name='searchForUser' id='searchForUser' size='40'>
+        <input type="submit" name="submit" class='btn btn-primary' value="Search">
+        <a href="adminUser.php" class='btn btn-primary' role='button'>Refresh?</a>
+    </div>
+</form>
+
 <table class='table table-bordered'>
 
 <?php 
