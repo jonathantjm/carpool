@@ -1,8 +1,8 @@
 <?php
 
 session_start();
-
-$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=25071995h!");
+//Please insert your password before continuing
+$db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=XXX");
 
 //Set default timezone
 date_default_timezone_set("Singapore");
