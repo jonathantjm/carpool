@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS bid;
+DROP TABLE IF EXISTS bidHistory;
 DROP TABLE IF EXISTS advertisements;
+DROP TABLE IF EXISTS advertisementsHistory;
 DROP TABLE IF EXISTS useraccount;
 DROP TABLE IF EXISTS locations;
 
@@ -37,16 +39,35 @@ CREATE TABLE advertisements (
     CONSTRAINT pickup_time_before_current_time CHECK((date_of_pickup = current_date AND time_of_pickup > current_time) OR (date_of_pickup > current_date))
 );
 
+CREATE TABLE advertisementsHistory (
+    email_of_driver VARCHAR(40) REFERENCES useraccount(email) ON UPDATE CASCADE ON DELETE CASCADE,
+    start_location VARCHAR(40) NOT NULL REFERENCES locations(location) ON UPDATE CASCADE ON DELETE SET NULL,
+    end_location VARCHAR(40) NOT NULL REFERENCES locations(location) ON UPDATE CASCADE ON DELETE SET NULL,
+    creation_date_and_time TIMESTAMP NOT NULL,
+    date_of_pickup DATE NOT NULL,
+    time_of_pickup TIME NOT NULL,
+    self_select BOOLEAN NOT NULL
+);
+
 CREATE TABLE bid (
     email VARCHAR(40) NOT NULL,
     advertisementID INTEGER NOT NULL,
-    status VARCHAR(8) NOT NULL DEFAULT 'pending',
+    status VARCHAR(8) NOT NULL DEFAULT 'Pending',
     price NUMERIC(5, 2) NOT NULL,
     creation_date_and_time TIMESTAMP NOT NULL,
     PRIMARY KEY (email, advertisementID),
     FOREIGN KEY (email) REFERENCES useraccount(email) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (advertisementID) REFERENCES advertisements(advertisementID) ON UPDATE CASCADE ON DELETE CASCADE,
-    CHECK(price > 0)
+    CHECK(price > 0),
+    CHECK(status = 'Pending' OR status = 'Rejected' OR status = 'Accepted' OR status = 'Expired')
+);
+
+CREATE TABLE bidHistory (
+    email VARCHAR(40) NOT NULL,
+    status VARCHAR(8) NOT NULL,
+    price NUMERIC(5, 2) NOT NULL,
+    creation_date_and_time TIMESTAMP NOT NULL,
+    FOREIGN KEY (email) REFERENCES useraccount(email) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 INSERT INTO locations VALUES

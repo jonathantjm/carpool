@@ -1,45 +1,53 @@
 CREATE OR REPLACE FUNCTION add_user(_name varchar, _gender varchar, _contact varchar, _email varchar, _password varchar, 
-_platenumber varchar, _capacity integer, _isDriver boolean, _isAdmin boolean)
+    _platenumber varchar, _capacity integer, _isDriver boolean, _isAdmin boolean)
 returns varchar as
 $BODY$
 --DECLARE result varchar;
 --DECLARE idvar integer;
 BEGIN
-IF EXISTS (SELECT email FROM useraccount WHERE email = _email) THEN return _email||' already exists!';
+    IF EXISTS (SELECT email FROM useraccount WHERE email = _email) THEN return 'Email already exists!';
 END IF;
-IF EXISTS (SELECT vehicle_plate FROM useraccount WHERE vehicle_plate = _platenumber)THEN return _platenumber||' already exists!';
+IF EXISTS (SELECT vehicle_plate FROM useraccount WHERE vehicle_plate = _platenumber) THEN return 'Plate number already exists!';
 END IF;
 INSERT INTO useraccount VALUES (_name, _gender, _contact, _email, _password, _platenumber, _capacity, _isDriver, _isAdmin);
---IF FOUND THEN return "Account has been successfully created!";
---ELSE return "Account was not created. Please check the values given!";
---END IF;
---IF array_length(idvar, 1) > 0 THEN return "Account has been successfully created!";
---ELSE return "Account was not created. Please check the values given!";
---END IF;
---SELECT _email INTO result;
 return 'Account has been successfully created!';
 END;
 $BODY$
 language 'plpgsql' volatile;
 
-CREATE OR REPLACE FUNCTION admin_add_offer(_advertisementID integer, _email varchar, _start varchar, _end varchar, _creationDateTime timestamp, 
-_pickupDate date, _pickupTime time, _driverSelfSelect boolean)
-returns varchar as
-$BODY$
---DECLARE result varchar;
---DECLARE idvar integer;
+-- update bids and offer status - stored procedure
+CREATE OR REPLACE FUNCTION updateBidsAndOfferStatus()
+RETURNS TRIGGER AS $bid_table$
 BEGIN
-IF NOT EXISTS (SELECT email FROM useraccount WHERE email = _email) THEN return 'Account for ' ||_email||' does not exist!';
+    IF NEW.status = 'Accepted' THEN
+        UPDATE bid SET status = 'Rejected' WHERE status = 'Pending' AND advertisementID = NEW.advertisementID;
+        INSERT INTO bidHistory(email, status, price, creation_date_and_time)
+            SELECT email, status, price, creation_date_and_time FROM bid WHERE advertisementID = NEW.advertisementID;
+        DELETE FROM bid WHERE advertisementID = NEW.advertisementID;
+        UPDATE advertisements SET closed = true WHERE advertisementID = NEW.advertisementID;
+        INSERT INTO advertisementsHistory(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select) 
+            SELECT email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select FROM advertisements WHERE advertisementID = NEW.advertisementID;
+        DELETE FROM advertisements WHERE advertisementID = NEW.advertisementID;
+   END IF;
+RETURN NEW;
+END;
+$bid_table$ LANGUAGE plpgsql;
+
+--update bid status - trigger
+CREATE TRIGGER updateBidsAndOffer 
+AFTER UPDATE
+ON bid
+FOR EACH ROW
+EXECUTE PROCEDURE updateBidsAndOfferStatus();
+
+    /*
+    CREATE OR REPLACE FUNCTION add_offer(_advertisementID integer, _email varchar, _start varchar, _end varchar, _creationDateTime timestamp, _pickupDate date, _pickupTime time, _driverSelfSelect boolean)
+    returns varchar as
+    $BODY$
+    BEGIN
+        IF NOT EXISTS (SELECT email FROM useraccount WHERE email = _email) THEN return 'User account for this email does not exist!';
 END IF;
 INSERT INTO advertisements VALUES (_advertisementID, _email, _start, _end, _creationDateTime, _pickupDate, _pickupTime, DEFAULT, _driverSelfSelect);
---IF FOUND THEN return "Account has been successfully created!";
---ELSE return "Account was not created. Please check the values given!";
---END IF;
---IF array_length(idvar, 1) > 0 THEN return "Account has been successfully created!";
---ELSE return "Account was not created. Please check the values given!";
---END IF;
---SELECT _email INTO result;
---return 'Account has been successfully created!';
 END;
 $BODY$
 language 'plpgsql' volatile;
