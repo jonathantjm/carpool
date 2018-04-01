@@ -40,14 +40,14 @@ CREATE TABLE advertisements (
 CREATE TABLE bid (
     email VARCHAR(40) NOT NULL,
     advertisementID INTEGER NOT NULL,
-    status VARCHAR(8) NOT NULL DEFAULT 'pending',
+    status VARCHAR(8) NOT NULL DEFAULT 'Pending',
     price NUMERIC(5, 2) NOT NULL,
     creation_date_and_time TIMESTAMP NOT NULL,
     PRIMARY KEY (email, advertisementID),
     FOREIGN KEY (email) REFERENCES useraccount(email) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (advertisementID) REFERENCES advertisements(advertisementID) ON UPDATE CASCADE ON DELETE CASCADE,
     CHECK(price > 0),
-    CHECK(status = 'pending' OR status = 'rejected' OR status = 'success')
+    CHECK(status = 'Pending' OR status = 'Rejected' OR status = 'Accepted')
 );
 
 INSERT INTO locations VALUES
