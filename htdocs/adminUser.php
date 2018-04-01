@@ -2,14 +2,6 @@
 include("header.php");
 include("adminNavBar.php");
 
-//Verify admin permissions
-$isAdmin = $_SESSION['isAdmin'];
-if($isAdmin == 'f') {
-    $message = "You are not authorized to view this page!";
-    echo "<script type='text/javascript'>alert('$message');
-    window.location.href='login.php';
-    </script>";
-}
 $result;
 if(isset($_POST['submit'])){
     $searchTerm = $_POST['searchForUser'];
@@ -18,6 +10,12 @@ if(isset($_POST['submit'])){
     $result = pg_query($db, 'SELECT * FROM useraccount'); 
 }
 $counter = 1;
+
+echo "<script type='text/javascript' class='init'>
+		$(document).ready(function() {
+			$('#table').DataTable();
+		});
+	</script>";
 ?>
 
 <html>
@@ -31,23 +29,26 @@ $counter = 1;
         <a href="adminUser.php" class='btn btn-primary' role='button'>Refresh?</a>
     </div>
 </form>
-
-<table class='table table-bordered'>
-
+	
+	<table id="table" class="table table-striped table-bordered" style="width:100%">
 <?php 
 
-echo "<tr>
-    <th>S/N</th>
-    <th>Name</th>
-    <th>Gender</th>
-    <th>Contact Number</th>
-    <th>Email</th>
-    <th>Password</th>
-    <th>Vehicle Plate</th>
-    <th>Capacity</th>
-    <th>Is a driver?</th>
-    </tr>";
-
+echo "<thead>
+	<tr>
+		<th>S/N</th>
+		<th>Name</th>
+		<th>Gender</th>
+		<th>Contact Number</th>
+		<th>Email</th>
+		<th>Password</th>
+		<th>Vehicle Plate</th>
+		<th>Capacity</th>
+		<th>Is a driver?</th>
+		<th>Edit</th>
+		<th>Delete</th>
+    </tr>
+	</thead>";
+echo "<tbody>";
     while($row = pg_fetch_array( $result )) { 
         echo "<tr>";
         echo "<td>" . $counter . "</td>";
@@ -64,7 +65,7 @@ echo "<tr>
         echo "</tr>";
         $counter++;
     }
-
+echo "</tbody>";
 ?>
 
 </table>

@@ -15,13 +15,14 @@ if (isset($_POST['submit'])){
     if (!isset($row[0])) {
         $emailError = 'There is no such email in use.';
     } else if(!($password == $row[0])){
-        $passwordError="Wrong password!";
-    }else{
+        $passwordError = "Wrong password!";
+    } else {
         if($row[1] == "t"){
-            $_SESSION['isAdmin']=$isAdmin;
+            $_SESSION['isAdmin']= 't';
             header("Location: adminPage.php");
-        }else{
-            $_SESSION['user']=$email;
+        } else {
+            $_SESSION['user']= $email;
+			$_SESSION['isAdmin']= 'f';
             header("Location: userPage.php");
         }
     }

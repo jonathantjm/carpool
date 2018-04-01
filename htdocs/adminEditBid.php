@@ -2,20 +2,16 @@
 include("header.php");
 include("adminNavBar.php");
 
-//Verify admin permissions
-$isAdmin = $_SESSION['isAdmin'];
-
-if($isAdmin == 'f') {
-	$message = "You are not authorized to view this page!";
-	echo "<script type='text/javascript'>alert('$message');
-		window.location.href='login.php';
-	</script>";
-}
-
 $advertisementID = $_GET['id'];
 $email = $_GET['mail'];
 $result = pg_query_params($db, 'SELECT * FROM bid WHERE advertisementid = $1 AND email = $2', array($advertisementID, $email));
 $row = pg_fetch_array($result);
+
+//Initialize potential errors
+$emailError = '';
+$adIdError = '';
+$priceError = '';
+$statusError = '';
 
 if (isset($_POST['submitForm'])) {
 	
@@ -23,22 +19,23 @@ if (isset($_POST['submitForm'])) {
 	$newID = $_POST['advertisementID'];
 	$newStatus = $_POST['status'];
 	$newPrice = $_POST['price'];
-	$newDateAndTime = date("Y/m/d h:i:s");
 
-	pg_query_params($db, 'UPDATE bid SET email = $3, advertisementid = $4, status = $5, price = $6, creation_date_and_time = $7 WHERE advertisementid = $1 AND email = $2', array($advertisementID, $email, $newMail, $newID, $newStatus, $newPrice, $newDateAndTime));
+	$query = pg_query_params($db, "SELECT admin_editBid($1, $2, $3, $4, $5, $6, $7)", array($email, $advertisementID, $newMail, $newID, $newStatus, $newPrice, $dateAndTime));
+	$result = pg_fetch_array($query);
+	$error = $result[0];
 	
-	$row[0] = $newMail;
-	$row[1] = $newID;
-	$row[2] = $newStatus;
-	$row[3] = $newPrice;
-
-	if (preg_match('/advertisementid/i', pg_last_error($db))) {
-		echo 'Advertisement id does not exists';		
-	} elseif (preg_match('/email/i', pg_last_error($db))) {
-		echo 'Email does not exists';
-	} else {
+	if (preg_match('/email/i', $error)) {
+		$emailError = $error;
+	} elseif (preg_match('/advertisement/i', $error)) {
+		$adIdError = $error;
+	} elseif (preg_match('/price/i', $error)) {
+		$priceError = $error;
+	} elseif (preg_match('/status/i', $error)) {
+		$statusError = $error;
+	} elseif ($error == '') {
 		header("Location: adminBid.php");
 	}
+
 }
 ?>
 
@@ -48,19 +45,23 @@ if (isset($_POST['submitForm'])) {
 		<form action="" method="post">
 			<div class='form-group'>
 				<label for='inputEmail'>Email address</label>
-				<?php echo"<input type='text' name='email' class='form-control' id='inputEmail' value='" . $row[0] . "'>";?>
+				<input type="email" name="email" class="form-control" id="inputEmail" placeholder="<?php echo $row[0]; ?>" required>
+				<span style="color:red"><?php echo $emailError; ?></span>
 			</div>
 			<div class='form-group'>
 				<label for='inputID'>Advertisement ID</label>
-				<?php echo "<input type='text' name='advertisementID' class='form-control' id='inputID' value='" . $row[1] . "'>";?>
+				<input type='text' name="advertisementID" class='form-control' id='inputID' placeholder="<?php echo $row[1]; ?>" required>
+				<span style="color:red"><?php echo $adIdError; ?></span>
 			</div>
 			<div class='form-group'>
 				<label for='inputStatus'>Status</label>
-				<?php echo "<input type='text' name='status' class='form-control' id='inputStatus' value='" . $row[2] . "'>";?>
+				<input type='text' name='status' class='form-control' id='inputStatus' placeholder="<?php echo $row[2]; ?>" required>
+				<span style="color:red"><?php echo $statusError; ?></span>
 			</div>
 			<div class='form-group'>
 				<label for='inputPrice'>Price</label>
-				<?php echo"<input type='number' min='0.01' step='0.01' name='price' class='form-control' id='inputPrice' value='" . $row[3] . "'>";?>
+				<input type="text" pattern="(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{1,2}))?)" name="price" class="form-control" id="inputPrice" placeholder="<?php echo $row[3]; ?>" required>
+				<span style="color:red"><?php echo $priceError; ?></span>
 			</div>
 			<button type="submit" name="submitForm" class="btn btn-primary">Submit</button>
 		</form>
