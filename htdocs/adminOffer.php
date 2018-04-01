@@ -2,14 +2,6 @@
 include("header.php");
 include("adminNavBar.php");
 
-//Verify admin permissions
-$isAdmin = $_SESSION['isAdmin'];
-if($isAdmin == 'f') {
-    $message = "You are not authorized to view this page!";
-    echo "<script type='text/javascript'>alert('$message');
-    window.location.href='login.php';
-    </script>";
-}
 $result;
 $locations = pg_query($db, "SELECT * FROM locations");
 if (isset($_POST['submit'])){
@@ -20,6 +12,12 @@ if (isset($_POST['submit'])){
     $result = pg_query($db, 'SELECT * FROM advertisements'); 
 }
 $counter = 1;
+
+echo "<script type='text/javascript' class='init'>
+		$(document).ready(function() {
+			$('#table').DataTable();
+		});
+	</script>";
 ?>
 
 <html>
@@ -65,23 +63,26 @@ $counter = 1;
     </div>
 </form>
 
-<table class="table table-bordered">
-
+	<table id="table" class="table table-striped table-bordered" style="width:100%">
 <?php 
 
-echo "<tr>
-    <th>S/N</th>
-    <th>Email</th>
-    <th>Advertisement ID</th>
-    <th>Date and time created</th>
-    <th>Starting location</th>
-    <th>Ending location</th>
-    <th>Time of pick-up</th>
-    <th>Date of pick-up</th>
-    <th>Offer status</th>
-    <th>Driver self-select</th>
-    </tr>";
-
+echo "<thead>
+	<tr>
+		<th>S/N</th>
+		<th>Email</th>
+		<th>Advertisement ID</th>
+		<th>Date and time created</th>
+		<th>Starting location</th>
+		<th>Ending location</th>
+		<th>Time of pick-up</th>
+		<th>Date of pick-up</th>
+		<th>Offer status</th>
+		<th>Driver self-select</th>
+		<th>Edit</th>
+		<th>Delete</th>
+    </tr>
+	</thead>";
+echo "<tbody>";
 while($row = pg_fetch_array( $result )) { 
     echo "<tr>";
     echo "<td>" . $counter . "</td>";
@@ -99,7 +100,7 @@ while($row = pg_fetch_array( $result )) {
     echo "</tr>";
     $counter++;
 }
-
+echo "</tbody>";
 ?>
 
     </table>
