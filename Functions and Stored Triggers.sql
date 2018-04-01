@@ -43,3 +43,46 @@ INSERT INTO advertisements VALUES (_advertisementID, _email, _start, _end, _crea
 END;
 $BODY$
 language 'plpgsql' volatile;
+
+CREATE OR REPLACE FUNCTION admin_addBid(_email varchar, _advertisementID integer, _price numeric, _creationDateTime TIMESTAMP) RETURNS varchar AS $$
+DECLARE
+    error1 varchar := 'User email is invalid!';
+	error2 varchar := 'Advertisement id does not exist!';
+    error3 varchar := 'Price should be numeric and greater than 0!';
+	message varchar := '';
+BEGIN
+	IF NOT EXISTS (SELECT email FROM useraccount WHERE email = _email)
+		THEN message := error1;
+	ELSEIF NOT EXISTS (SELECT advertisementid FROM advertisements WHERE advertisementid = _advertisementID)
+		THEN message := error2;
+	ELSEIF (_price <= 0)
+		THEN message := error3;
+	ELSE
+		INSERT INTO bid(email, advertisementid, price, creation_date_and_time) VALUES(_email, _advertisementID, _price, _creationDateTime);
+	END IF;
+	RETURN message;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION admin_editBid(_oldEmail varchar, _oldID integer, _email varchar, _advertisementID integer, _status varchar, _price numeric, _creationDateTime TIMESTAMP) RETURNS varchar AS $$
+DECLARE
+	error1 varchar := 'User email is invalid!';
+	error2 varchar := 'Advertisement id does not exist!';
+	error3 varchar := 'Status is case-sensitive and should be Pending, Accepted, Expired or Rejected';
+	error4 varchar := 'Price should be numeric and greater than 0!';
+	message varchar := '';
+BEGIN
+	IF NOT EXISTS (SELECT email FROM useraccount WHERE email = _email)
+		THEN message := error1;
+	ELSEIF NOT EXISTS (SELECT advertisementid FROM advertisements WHERE advertisementid = _advertisementID)
+		THEN message := error2;
+	ELSEIF (_status <> 'Pending' AND _status <> 'Accepted' AND _status <> 'Expired' AND _status <> 'Rejected')
+		THEN message := error3;
+	ELSEIF (_price <= 0)
+		THEN message := error4;
+	ELSE
+		UPDATE bid SET email = _email, advertisementid = _advertisementID, status = _status, price = _price, creation_date_and_time = _creationDateTime WHERE advertisementid = _oldID AND email = _oldEmail;
+	END IF;
+	RETURN message;
+END;
+$$ LANGUAGE plpgsql;
