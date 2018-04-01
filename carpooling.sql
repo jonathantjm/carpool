@@ -46,7 +46,8 @@ CREATE TABLE bid (
     PRIMARY KEY (email, advertisementID),
     FOREIGN KEY (email) REFERENCES useraccount(email) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (advertisementID) REFERENCES advertisements(advertisementID) ON UPDATE CASCADE ON DELETE CASCADE,
-    CHECK(price > 0)
+    CHECK(price > 0),
+    CHECK(status = 'pending' OR status = 'rejected' OR status = 'success')
 );
 
 INSERT INTO locations VALUES
