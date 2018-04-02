@@ -8,6 +8,11 @@ $result = pg_query($db, "SELECT * FROM bid B, advertisements A
 	AND email = '" . $_SESSION['user'] . "';"); 
 $locations = pg_query($db, "SELECT * FROM locations"); 
 
+echo "<script type='text/javascript' class='init'>
+		$(document).ready(function() {
+			$('#table').DataTable();
+		});
+	</script>";
 ?>
 
 <html>
@@ -44,7 +49,7 @@ foreach ($locations_array as $location){
 	echo "<option value ='".$location."' >".$location."</option>";
 }
 echo "</select><br/>";
-
+$counter = 1;
 ?>
 
 <strong>Date Of Pickup: </strong> <input type="date" name="date_of_pickup"><br/>
@@ -61,6 +66,8 @@ if(isset($_POST['button'])){
 	$date_of_pickup = $_POST['date_of_pickup'];
 	$start_time = $_POST['start_time'];
 	$end_time = $_POST['end_time'];
+	echo $date_of_pickup;
+	echo $start_time;
 
 	$query_string = "SELECT * FROM advertisements WHERE ";
 
@@ -92,22 +99,31 @@ if(isset($_POST['button'])){
 
 	
 	if(pg_num_rows($search_results) > 0){
-		echo "<br><table><tr>
-			<th>Start Location</th>
-			<th>End Location</th>
-			<th>Pick up date</th>
-			<th>Pick up time</th>
-		</tr>";
+		echo "<table id='table' class='table table-striped table-bordered' style='width:100%'>
+		<thead>
+			<tr>
+				<th>S/N</th>
+				<th>Start Location</th>
+				<th>End Location</th>
+				<th>Pick up date</th>
+				<th>Pick up time</th>
+				<th>Bid</th>
+			</tr>
+		</thead>
+		<tbody>";
 		while ($row = pg_fetch_assoc($search_results)){
 			echo "<tr>";
+				echo "<td>" . $counter . "</td>";
 				echo "<td>" . $row['start_location'] . "</td>";
 				echo "<td>" . $row['end_location'] . "</td>";
 				echo "<td>" . $row['date_of_pickup'] . "</td>";
 				echo "<td>" . $row['time_of_pickup'] . "</td>";
 				echo "<td><a href='userCreateBid.php?id=".$row['advertisementid']."'>Bid</a></td>";
 			echo "</tr>";
+			$counter++;
 		}	
-		echo "</table>";
+		echo "</tbody>
+		</table>";
 	}
 	else{
 		echo "<br>Sorry. No matching rides found!<br><br>";
@@ -123,18 +139,25 @@ if(isset($_POST['button'])){
 <table>
 
 <?php 
-
-echo "<tr>
-		<th>Start Location</th>
-		<th>End Location</th>
-		<th>Pick up date</th>
-		<th>Pick up time</th>
-		<th>Price Bidded</th>
-		<th>Status</th>
-	</tr>";
-
+$count = 1;
+echo "<table id='table' class='table table-striped table-bordered' style='width:100%'>
+	<thead>
+		<tr>
+			<th>S/N</th>
+			<th>Start Location</th>
+			<th>End Location</th>
+			<th>Pick up date</th>
+			<th>Pick up time</th>
+			<th>Price Bidded</th>
+			<th>Status</th>
+			<th>Delete</th>
+			<th>Edit</th>
+		</tr>
+	</thead>
+	<tbody>";
 while($row = pg_fetch_assoc( $result )) { 
 	echo "<tr>";
+		echo "<td>" . $count . "</td>";
 		echo "<td>" . $row['start_location'] . "</td>";
 		echo "<td>" . $row['end_location'] . "</td>";
 		echo "<td>" . $row['date_of_pickup'] . "</td>";
@@ -144,12 +167,11 @@ while($row = pg_fetch_assoc( $result )) {
 		echo "<td><a href='userDeleteBid.php?id=".$row['advertisementid']."'>Delete</a></td>";
 		echo "<td><a href='userEditBid.php?id=".$row['advertisementid']."'>Edit</a></td>";
 	echo "</tr>";
+	$count++;
 }
-
+echo "</tbody>
+	</table>";
 ?>
-	
-</table>
-
 <p>Add a new bid</p>
 
 <p><a href="userCreateBid.php">New bid</a></p>

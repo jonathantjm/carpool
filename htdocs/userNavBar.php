@@ -1,5 +1,6 @@
 <?php
 //Verify user is logged in
+$isAdmin = $_SESSION['isAdmin'];
 if ($isAdmin == null) {
 	$message = "Please login to view this page!";
 	echo "<script type='text/javascript'>alert('$message');
