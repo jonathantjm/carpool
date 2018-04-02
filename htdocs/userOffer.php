@@ -6,6 +6,12 @@ include("userNavBar.php");
 $result = pg_query($db, "SELECT * FROM advertisements 
 	WHERE email_of_driver = '" . $_SESSION['user'] . "';"); 
 
+echo "<script type='text/javascript' class='init'>
+		$(document).ready(function() {
+			$('#table').DataTable();
+		});
+	</script>";
+$counter = 1;
 ?>
 
 <html>
@@ -14,19 +20,26 @@ $result = pg_query($db, "SELECT * FROM advertisements
 
 <?php 
 
-if (pg_num_rows($result) > 0){
-	echo "<table cellpadding = \"10\"><tr>
-		<th>Start Location</th>
-		<th>End Location</th>
-		<th>Pick up date</th>
-		<th>Pick up time</th>
-		<th>Closed?</th>
-		<th>Self Select?</th>
-		<th>Date and Time Created</th>
-	</tr>";
-
+if (pg_num_rows($result) > 0) {
+	echo "<table id='table' class='table table-striped table-bordered' style='width:100%'>
+	<thead>
+		<tr>
+			<th>S/N</th>
+			<th>Start Location</th>
+			<th>End Location</th>
+			<th>Pick up date</th>
+			<th>Pick up time</th>
+			<th>Closed?</th>
+			<th>Self Select?</th>
+			<th>Date and Time Created</th>
+			<th>Delete</th>
+			<th>Edit</th>
+		</tr>
+	</thead>
+	<tbody>";
 	while($row = pg_fetch_array( $result )) { 
 		echo "<tr>";
+		echo "<td>" . $counter . "</td>";
 		echo "<td>" . $row[2] . "</td>";
 		echo "<td>" . $row[3] . "</td>";
 		echo "<td>" . $row[5] . "</td>";
@@ -47,8 +60,10 @@ if (pg_num_rows($result) > 0){
 		echo "<td><a href='userDeleteOffer.php?id=".$row[0]."'>Delete</a></td>";
 		echo "<td><a href='userEditOffer.php?id=".$row[0]."'>Edit</a></td>";
 		echo "</tr>";
+		$counter++;
 	}
-	echo "</table>";
+	echo "</tbody>
+	</table>";
 }
 else{
 	echo "<br>You have not made any offers!<br><br>";
