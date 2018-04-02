@@ -1,5 +1,6 @@
 <?php
 include("header.php");
+
 //Verify admin permissions
 $isAdmin = $_SESSION['isAdmin'];
 if($isAdmin == 'f') {
@@ -16,12 +17,8 @@ if($isAdmin == 'f') {
 
 $advertisementID = $_GET['id'];
 
-if(is_null($advertisementID)){
-    echo 'No advertisement ID detected.';
-}
-
 pg_query_params($db, 'SELECT delete_advertisement($1)', array($advertisementID));
-echo pg_last_error($db);
+
 header("Location: adminOffer.php");
 ?>
 
