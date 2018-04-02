@@ -1,5 +1,5 @@
 <?php
-//Verify admin permissions
+//Verify admin permissions and user is logged in
 $isAdmin = $_SESSION['isAdmin'];
 if($isAdmin == 'f') {
 	$message = "You are not authorized to view this page!";
