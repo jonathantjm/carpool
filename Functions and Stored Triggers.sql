@@ -1,3 +1,4 @@
+-- add a user
 CREATE OR REPLACE FUNCTION add_user(_name varchar, _gender varchar, _contact varchar, _email varchar, _password varchar, 
     _platenumber varchar, _capacity integer, _isDriver boolean, _isAdmin boolean)
 returns varchar as
@@ -11,6 +12,22 @@ IF EXISTS (SELECT vehicle_plate FROM useraccount WHERE vehicle_plate = _platenum
 END IF;
 INSERT INTO useraccount VALUES (_name, _gender, _contact, _email, _password, _platenumber, _capacity, _isDriver, _isAdmin);
 return 'Account has been successfully created!';
+END;
+$BODY$
+language 'plpgsql' volatile;
+
+-- delete advertisement and place deleted advertisement into advertisementsHistory
+CREATE OR REPLACE FUNCTION delete_advertisement(_advertisementID bigint)
+returns varchar as
+$BODY$
+BEGIN
+IF EXISTS (SELECT * FROM advertisements WHERE advertisementID = _advertisementID) THEN
+UPDATE advertisements SET closed = true WHERE advertisementID = _advertisementID;
+INSERT INTO advertisementsHistory(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select)
+    SELECT email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select FROM advertisements WHERE advertisementID = _advertisementID;
+DELETE FROM advertisements WHERE advertisementID = _advertisementID;
+return _advertisementID|| 'Plate number already exists!';
+END IF;
 END;
 $BODY$
 language 'plpgsql' volatile;
