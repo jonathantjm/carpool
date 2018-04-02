@@ -51,22 +51,26 @@ CREATE TABLE advertisementsHistory (
 
 CREATE TABLE bid (
     email VARCHAR(40) NOT NULL,
-    advertisementID INTEGER NOT NULL,
-    status VARCHAR(8) NOT NULL DEFAULT 'Pending',
+    advertisementID BIGINT NOT NULL,
+    status VARCHAR(9) NOT NULL DEFAULT 'Pending',
     price NUMERIC(5, 2) NOT NULL,
     creation_date_and_time TIMESTAMP NOT NULL,
     PRIMARY KEY (email, advertisementID),
     FOREIGN KEY (email) REFERENCES useraccount(email) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (advertisementID) REFERENCES advertisements(advertisementID) ON UPDATE CASCADE ON DELETE CASCADE,
     CHECK(price > 0),
-    CHECK(status = 'Pending' OR status = 'Rejected' OR status = 'Accepted' OR status = 'Expired')
+    CHECK(status = 'Pending' OR status = 'Rejected' OR status = 'Accepted' OR status = 'Expired' OR status = 'Retracted')
 );
 
 CREATE TABLE bidHistory (
     email VARCHAR(40) NOT NULL,
-    status VARCHAR(8) NOT NULL,
+    status VARCHAR(9) NOT NULL,
     price NUMERIC(5, 2) NOT NULL,
     creation_date_and_time TIMESTAMP NOT NULL,
+    start_location VARCHAR(40) NOT NULL REFERENCES locations(location) ON UPDATE CASCADE ON DELETE SET NULL,
+    end_location VARCHAR(40) NOT NULL REFERENCES locations(location) ON UPDATE CASCADE ON DELETE SET NULL,
+    date_of_pickup DATE NOT NULL,
+    time_of_pickup TIME NOT NULL,
     FOREIGN KEY (email) REFERENCES useraccount(email) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
