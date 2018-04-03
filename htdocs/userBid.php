@@ -6,6 +6,8 @@ include("userNavBar.php");
 $result = pg_query($db, "SELECT * FROM bid B, advertisements A
 	WHERE B.advertisementid = A.advertisementid 
 	AND email = '" . $_SESSION['user'] . "';"); 
+$historyResult = pg_query($db, "SELECT * FROM bidhistory
+	WHERE email = '" . $_SESSION['user'] . "';"); 
 $locations = pg_query($db, "SELECT * FROM locations"); 
 
 echo "<script type='text/javascript' class='init'>
@@ -17,7 +19,7 @@ echo "<script type='text/javascript' class='init'>
 
 <html>
 
-<h1><b>Search for offers:</b></h1>
+<h1><b>Make a bid by searching for offers:</b></h1>
 
 <form action="" method="post">
 
@@ -140,41 +142,84 @@ if(isset($_POST['button'])){
 
 <?php 
 $count = 1;
-echo "<table id='table' class='table table-striped table-bordered' style='width:100%'>
-	<thead>
-		<tr>
-			<th>S/N</th>
-			<th>Start Location</th>
-			<th>End Location</th>
-			<th>Pick up date</th>
-			<th>Pick up time</th>
-			<th>Price Bidded</th>
-			<th>Status</th>
-			<th>Delete</th>
-			<th>Edit</th>
-		</tr>
-	</thead>
-	<tbody>";
-while($row = pg_fetch_assoc( $result )) { 
-	echo "<tr>";
-		echo "<td>" . $count . "</td>";
-		echo "<td>" . $row['start_location'] . "</td>";
-		echo "<td>" . $row['end_location'] . "</td>";
-		echo "<td>" . $row['date_of_pickup'] . "</td>";
-		echo "<td>" . $row['time_of_pickup'] . "</td>";
-		echo "<td>" . $row['price'] . "</td>";
-		echo "<td>" . $row['status'] . "</td>";
-		echo "<td><a href='userDeleteBid.php?id=".$row['advertisementid']."'>Delete</a></td>";
-		echo "<td><a href='userEditBid.php?id=".$row['advertisementid']."'>Edit</a></td>";
-	echo "</tr>";
-	$count++;
+if (pg_num_rows($result) > 0){
+	echo "<table id='table' class='table table-striped table-bordered' style='width:100%'>
+		<thead>
+			<tr>
+				<th>S/N</th>
+				<th>Start Location</th>
+				<th>End Location</th>
+				<th>Pick up date</th>
+				<th>Pick up time</th>
+				<th>Price Bidded</th>
+				<th>Status</th>
+				<th>Delete</th>
+				<th>Edit</th>
+			</tr>
+		</thead>
+		<tbody>";
+	while($row = pg_fetch_assoc( $result )) { 
+		echo "<tr>";
+			echo "<td>" . $count . "</td>";
+			echo "<td>" . $row['start_location'] . "</td>";
+			echo "<td>" . $row['end_location'] . "</td>";
+			echo "<td>" . $row['date_of_pickup'] . "</td>";
+			echo "<td>" . $row['time_of_pickup'] . "</td>";
+			echo "<td>" . $row['price'] . "</td>";
+			echo "<td>" . $row['status'] . "</td>";
+			echo "<td><a href='userDeleteBid.php?id=".$row['advertisementid']."'>Delete</a></td>";
+			echo "<td><a href='userEditBid.php?id=".$row['advertisementid']."'>Edit</a></td>";
+		echo "</tr>";
+		$count++;
+	}
+	echo "</tbody>
+		</table>";	
 }
-echo "</tbody>
-	</table>";
-?>
-<p>Add a new bid</p>
+else{
+	echo "<br>You do have any bids!<br><br>";
+}
 
-<p><a href="userCreateBid.php">New bid</a></p>
+?>
+
+<h1><b>Your Past Bids:</b></h1>
+
+<table>
+
+<?php 
+	if (pg_num_rows($historyResult)>0){
+		$count = 1;
+		echo "<table id='table' class='table table-striped table-bordered' style='width:100%'>
+			<thead>
+				<tr>
+					<th>S/N</th>
+					<th>Start Location</th>
+					<th>End Location</th>
+					<th>Pick up date</th>
+					<th>Pick up time</th>
+					<th>Price Bidded</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>";
+		while($row = pg_fetch_assoc( $historyResult )) { 
+			echo "<tr>";
+				echo "<td>" . $count . "</td>";
+				echo "<td>" . $row['start_location'] . "</td>";
+				echo "<td>" . $row['end_location'] . "</td>";
+				echo "<td>" . $row['date_of_pickup'] . "</td>";
+				echo "<td>" . $row['time_of_pickup'] . "</td>";
+				echo "<td>" . $row['price'] . "</td>";
+				echo "<td>" . $row['status'] . "</td>";
+			echo "</tr>";
+			$count++;
+		}
+		echo "</tbody>
+			</table>";
+	}
+	else{
+		echo "<br>You do have any past bids!<br><br>";
+	}
+?>
 
 </body>
 
