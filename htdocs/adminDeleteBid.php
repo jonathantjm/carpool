@@ -19,7 +19,7 @@ $advertisementID = $_GET['id'];
 $email = $_GET['mail'];
 
 $result = pg_query_params($db, 'SELECT deleteBid($1, $2)', array($email, $advertisementID));
-
+//echo pg_last_error($db);
 header("Location: adminBid.php");
 
 ?>
