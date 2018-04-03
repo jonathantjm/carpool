@@ -52,7 +52,7 @@ CREATE TABLE advertisementsHistory (
 CREATE TABLE bid (
     email VARCHAR(40) NOT NULL,
     advertisementID BIGINT NOT NULL,
-    status VARCHAR(9) NOT NULL DEFAULT 'Pending',
+    status VARCHAR(30) NOT NULL DEFAULT 'Pending',
     price NUMERIC(5, 2) NOT NULL,
     creation_date_and_time TIMESTAMP NOT NULL,
     PRIMARY KEY (email, advertisementID),

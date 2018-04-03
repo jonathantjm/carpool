@@ -45,19 +45,14 @@ DECLARE
 	_pickUpDate date;
 	_pickUpTime time;
 BEGIN
-    IF NEW.status = 'Accepted' THEN		
+    IF NEW.status = 'Accepted' THEN
+        -- this part settles the bids
         UPDATE bid SET status = 'Rejected' WHERE status = 'Pending' AND advertisementID = NEW.advertisementID;
---		_email = SELECT email FROM bid WHERE advertisementID = NEW.advertisementID AND status = NEW.status;--
---		_status = SELECT status FROM bid WHERE advertisementID = NEW.advertisementID AND status = NEW.status;
---		_price = SELECT price FROM bid WHERE advertisementID = NEW.advertisementID AND status = NEW.status;
---		_creationDateTime = SELECT creation_date_and_time FROM bid WHERE advertisementID = NEW.advertisementID AND status = NEW.status;
---		_startLocation = SELECT start_location FROM advertisements WHERE advertisementID = NEW.advertisementID;
---		_endLocation = SELECT end_location FROM advertisements WHERE advertisementID = NEW.advertisementID;
---		_pickUpDate = SELECT date_of_pickup FROM advertisements WHERE advertisementID = NEW.advertisementID;
---		_pickUpTime = SELECT time_of_pickup FROM advertisements WHERE advertisementID = NEW.advertisementID;
---		INSERT INTO bidHistory(email, status, price, creation_date_and_time, start_location, end_location, date_of_pickup, time_of_pickup)
---			VALUES(_email, _status, _price, _creationDateTime, _startLocation, _endLocation, _pickUpDate, _pickUpTime);
---		DELETE FROM bid WHERE advertisementID = NEW.advertisementID;
+        INSERT INTO bidHistory(email, status, price, creation_date_and_time, start_location, end_location, date_of_pickup, time_of_pickup)
+            SELECT B1.email, B1.status, B1.price, B1.creation_date_and_time, A1.start_location, A1.end_location, A1.date_of_pickup, A1.time_of_pickup FROM bid B1, advertisements A1 WHERE B1.advertisementID = A1.advertisementID AND A1.advertisementID = NEW.advertisementID;
+        DELETE FROM bid WHERE advertisementID = NEW.advertisementID;
+
+        -- this part settles the advertisements
         UPDATE advertisements SET closed = true WHERE advertisementID = NEW.advertisementID;
         INSERT INTO advertisementsHistory(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select) 
             SELECT email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select FROM advertisements WHERE advertisementID = NEW.advertisementID;
