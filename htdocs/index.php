@@ -1,4 +1,6 @@
-<?php	session_start();  ?>
+<?php
+include("header.php");
+?>
 
 <script type="text/javascript">
   function login_Display() {
@@ -10,13 +12,11 @@
 </script>
 
 <html>
-
-<body>
-	<div>
-		<h2>Car Pooling</h2>
-		<button type="button" onclick="login_Display()">Login</button>
-        <button type="button" onclick="signup_Display()">Signup</button>
+<body id="backgroundimage">
+	<div class="col-lg-12" style="height:320px;"></div>
+	<div class = "row">
+		<button type="button" class = "btn btn-huge btn-danger col-md-2  col-md-offset-3 text-center" onclick="login_Display()">LOGIN</button>
+		<button type="button" class = "btn btn-huge  btn-danger col-md-2  col-md-offset-2 text-center" onclick="signup_Display()">SIGNUP</button>
 	</div>
 </body>
-
 </html>

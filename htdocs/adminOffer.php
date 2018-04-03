@@ -21,7 +21,7 @@ echo "<script type='text/javascript' class='init'>
 
 <html>
 <body>
-<h2>View Existing Offers Information</h2>
+<h1 class="text-center">Existing Offers Information</h1>
 <form action='' method='post'>
     <div class='form-group'>
         <label>Search for offers based on start and end locations: </label></br>

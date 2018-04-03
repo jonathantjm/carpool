@@ -20,7 +20,7 @@ echo "<script type='text/javascript' class='init'>
 
 <html>
 <body>
-<h2>View Existing User Information</h2>
+<h1 class="text-center">Existing User Information</h1>
 <form action='' method='post'>
     <div class='form-group'>
         <label for='searchForUser'>Search for: </label>
