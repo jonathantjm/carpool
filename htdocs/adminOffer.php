@@ -11,7 +11,6 @@ if (isset($_POST['submit'])){
 } else {
     $result = pg_query($db, 'SELECT * FROM advertisements'); 
 }
-$counter = 1;
 
 echo "<script type='text/javascript' class='init'>
 		$(document).ready(function() {
@@ -22,7 +21,7 @@ echo "<script type='text/javascript' class='init'>
 
 <html>
 <body>
-<h2>View Existing Offers Information</h2>
+<h1 class="text-center">Existing Offers Information</h1>
 <form action='' method='post'>
     <div class='form-group'>
         <label>Search for offers based on start and end locations: </label></br>
@@ -65,7 +64,7 @@ echo "<script type='text/javascript' class='init'>
 
 	<table id="table" class="table table-striped table-bordered" style="width:100%">
 <?php 
-
+$counter = 1;
 echo "<thead>
 	<tr>
 		<th>S/N</th>
@@ -95,8 +94,8 @@ while($row = pg_fetch_array( $result )) {
     echo "<td>" . $row[5] . "</td>";
     echo "<td>" . $row[7] . "</td>";
     echo "<td>" . $row[8] . "</td>";
-    echo "<td class='table-fit'><a href='adminDeleteOffer.php?id=", urlencode($row[0]), "' class='btn btn-primary' role='button'>Delete</a></td>";
     echo "<td class='table-fit'><a href='adminEditOffer.php?id=", urlencode($row[0]), "'class='btn btn-primary' role='button'>Edit</a></td>";
+    echo "<td class='table-fit'><a href='adminDeleteOffer.php?id=", urlencode($row[0]), "' class='btn btn-primary' role='button'>Delete</a></td>";
     echo "</tr>";
     $counter++;
 }

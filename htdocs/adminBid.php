@@ -1,18 +1,5 @@
 <?php  
 include("header.php");
-//Verify admin permissions
-$isAdmin = $_SESSION['isAdmin'];
-if($isAdmin == 'f') {
-	$message = "You are not authorized to view this page!";
-	echo "<script type='text/javascript'>alert('$message');
-		
-	</script>";
-} elseif ($isAdmin == null) {
-	$message = "Please login to view this page!";
-	echo "<script type='text/javascript'>alert('$message');
-		window.location.href='login.php';
-	</script>";
-}
 include("adminNavBar.php");
 
 $result = pg_query($db, 'SELECT * FROM bid ORDER BY advertisementid'); 
@@ -28,6 +15,7 @@ echo "<script type='text/javascript' class='init'>
 
 <html>
 	<body>
+	<div>
 		<h1 class="text-center">Existing Bidding Information</h1>
 		<table id="table" class="table table-striped table-bordered" style="width:100%">
 <?php 
@@ -35,10 +23,10 @@ echo "<thead>
 		<tr>
 			<th>S/N</th>
 			<th>Email</th>
-			<th>AdvertisementID</th>
+			<th>Advertisement ID</th>
 			<th>Status</th>
 			<th>Price(SGD)</th>
-			<th>Date and Time created</th>
+			<th>Date and time created</th>
 			<th>Edit</th>
 			<th>Delete</th>
 		</tr>
@@ -64,5 +52,6 @@ echo "</tbody>";
 		<ul class="pager">
 			<li class="previous"><a href="adminPage.php">Back</a></li>
 		</ul>
+	</div>
 	</body>
 </html>

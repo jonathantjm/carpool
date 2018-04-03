@@ -20,7 +20,7 @@ echo "<script type='text/javascript' class='init'>
 
 <html>
 <body>
-<h2>View Existing User Information</h2>
+<h1 class="text-center">Existing User Information</h1>
 <form action='' method='post'>
     <div class='form-group'>
         <label for='searchForUser'>Search for: </label>
@@ -60,8 +60,8 @@ echo "<tbody>";
         echo "<td>" . $row[5] . "</td>";
         echo "<td>" . $row[6] . "</td>";
         echo "<td>" . $row[7] . "</td>";
-        echo "<td class='table-fit'><a href='adminDeleteUser.php?email=", urlencode($row[3]), "'class='btn btn-primary' role='button'>Delete</a></td>";
         echo "<td class='table-fit'><a href='adminEditUser.php?email=", urlencode($row[3]), "'class='btn btn-primary' role='button'>Edit</a></td>";
+        echo "<td class='table-fit'><a href='adminDeleteUser.php?email=", urlencode($row[3]), "'class='btn btn-primary' role='button'>Delete</a></td>";
         echo "</tr>";
         $counter++;
     }
