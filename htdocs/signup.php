@@ -1,6 +1,5 @@
 <?php  
 include("header.php");
-include("userNavBar.php");
 
 //Initialize potential errors
 $vehiclePlateError = '';

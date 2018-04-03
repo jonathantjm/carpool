@@ -59,7 +59,7 @@ CREATE TABLE bid (
     FOREIGN KEY (email) REFERENCES useraccount(email) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (advertisementID) REFERENCES advertisements(advertisementID) ON UPDATE CASCADE ON DELETE CASCADE,
     CHECK(price > 0),
-    CHECK(status = 'Pending' OR status = 'Rejected' OR status = 'Accepted' OR status = 'Retracted')
+    CHECK(status = 'Pending' OR status = 'Rejected' OR status = 'Accepted' OR status = 'Offer retracted' OR status = 'Offer expired')
 );
 
 CREATE TABLE bidHistory (

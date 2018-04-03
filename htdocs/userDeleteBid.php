@@ -25,7 +25,7 @@ if(pg_fetch_array($creator)[0] != $email){
 
 
 if(isset($_POST['yes'])){
-	$result = pg_query($db, "DELETE FROM bid WHERE advertisementid = '" . $advertisementID . "';");
+	$result = pg_query_params($db, 'SELECT deleteBid($1, $2)', array($email, $advertisementID));
 	header("Location: userOffer.php");
 }
 elseif(isset($_POST['no'])){
