@@ -18,6 +18,7 @@ if (isset($_POST['submit'])){
         $passwordError = "Wrong password!";
     } else {
         if($row[1] == "t"){
+			$_SESSION['user']= $email;
             $_SESSION['isAdmin']= 't';
             header("Location: adminPage.php");
         } else {
