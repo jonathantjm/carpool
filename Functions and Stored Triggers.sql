@@ -90,12 +90,15 @@ language 'plpgsql' volatile;
 --Function for admin to add new bid
 CREATE OR REPLACE FUNCTION admin_addBid(_email varchar, _advertisementID bigint, _price numeric, _creationDateTime TIMESTAMP) RETURNS varchar AS $$
 DECLARE
+    error0 varchar := 'Users cannot bid for their own offer!';
     error1 varchar := 'User email is invalid!';
 	error2 varchar := 'Advertisement id does not exist!';
     error3 varchar := 'Price should be numeric and greater than 0!';
 	message varchar := '';
 BEGIN
-	IF NOT EXISTS (SELECT email FROM useraccount WHERE email = _email)
+    IF EXISTS (SELECT email_of_driver FROM advertisements WHERE advertisementID = _advertisementID AND email_of_driver = _email)
+        THEN message := error0;
+    ELSEIF NOT EXISTS (SELECT email FROM useraccount WHERE email = _email)
 		THEN message := error1;
 	ELSEIF NOT EXISTS (SELECT advertisementid FROM advertisements WHERE advertisementid = _advertisementID)
 		THEN message := error2;
