@@ -64,7 +64,7 @@ CREATE TABLE bid (
 
 CREATE TABLE bidHistory (
     email VARCHAR(40) NOT NULL,
-    status VARCHAR(9) NOT NULL,
+    status VARCHAR(30) NOT NULL,
     price NUMERIC(5, 2) NOT NULL,
     creation_date_and_time TIMESTAMP NOT NULL,
     start_location VARCHAR(40) NOT NULL REFERENCES locations(location) ON UPDATE CASCADE ON DELETE SET NULL,

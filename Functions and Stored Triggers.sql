@@ -32,18 +32,9 @@ END;
 $BODY$
 language 'plpgsql' volatile;
 
--- update bids and offer status - stored procedure
+-- update bids and offer status - stored procedure -- trigger AFTER UPDATE on bid
 CREATE OR REPLACE FUNCTION updateBidsAndOfferStatus()
 RETURNS TRIGGER AS $bid_table$
-DECLARE
-	_email varchar;
-	_status varchar;
-	_price numeric;
-	_creationDateTime timestamp;
-	_startLocation varchar;
-	_endLocation varchar;
-	_pickUpDate date;
-	_pickUpTime time;
 BEGIN
     IF NEW.status = 'Accepted' THEN
         -- this part settles the bids
@@ -51,23 +42,14 @@ BEGIN
         INSERT INTO bidHistory(email, status, price, creation_date_and_time, start_location, end_location, date_of_pickup, time_of_pickup)
             SELECT B1.email, B1.status, B1.price, B1.creation_date_and_time, A1.start_location, A1.end_location, A1.date_of_pickup, A1.time_of_pickup FROM bid B1, advertisements A1 WHERE B1.advertisementID = A1.advertisementID AND A1.advertisementID = NEW.advertisementID;
         DELETE FROM bid WHERE advertisementID = NEW.advertisementID;
-
         -- this part settles the advertisements
         UPDATE advertisements SET closed = true WHERE advertisementID = NEW.advertisementID;
         INSERT INTO advertisementsHistory(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select) 
             SELECT email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select FROM advertisements WHERE advertisementID = NEW.advertisementID;
         DELETE FROM advertisements WHERE advertisementID = NEW.advertisementID;
 	ELSEIF NEW.status = 'Rejected' OR NEW.status = 'Offer retracted' OR NEW.status = 'Offer expired' THEN
-		_email = NEW.email;
-		_status = SELECT status FROM bid WHERE advertisementID = NEW.advertisementID AND email = NEW.email;
-		_price = SELECT price FROM bid WHERE advertisementID = NEW.advertisementID AND email = NEW.email;
-		_creationDateTime = SELECT creation_date_and_time FROM bid WHERE email = NEW.email AND advertisementID = NEW.advertisementID;
-		_startLocation = SELECT start_location FROM advertisements WHERE email = NEW.email AND advertisementID = NEW.advertisementID;
-		_endLocation = SELECT end_location FROM advertisements WHERE advertisementID = NEW.advertisementID;
-		_pickUpDate = SELECT date_of_pickup FROM advertisements WHERE advertisementID = NEW.advertisementID;
-		_pickUpTime = SELECT time_of_pickup FROM advertisements WHERE advertisementID = NEW.advertisementID;
-		INSERT INTO bidHistory(email, status, price, creation_date_and_time, start_location, end_location, date_of_pickup, time_of_pickup)
-			VALUES(_email, _status, _price, _creationDateTime, _startLocation, _endLocation, _pickUpDate, _pickUpTime);
+        INSERT INTO bidHistory(email, status, price, creation_date_and_time, start_location, end_location, date_of_pickup, time_of_pickup)
+            SELECT B1.email, B1.status, B1.price, B1.creation_date_and_time, A1.start_location, A1.end_location, A1.date_of_pickup, A1.time_of_pickup FROM bid B1, advertisements A1 WHERE B1.advertisementID = A1.advertisementID AND A1.advertisementID = NEW.advertisementID;
 		DELETE FROM bid WHERE advertisementID = NEW.advertisementID AND email = NEW.email;
    END IF;
 RETURN NEW;
@@ -113,7 +95,7 @@ CREATE OR REPLACE FUNCTION admin_editBid(_oldEmail varchar, _oldID integer, _ema
 DECLARE
 	error1 varchar := 'User email is invalid!';
 	error2 varchar := 'Advertisement id does not exist!';
-	error3 varchar := 'Status is case-sensitive and should be Pending, Accepted, Expired or Rejected';
+	error3 varchar := 'Status is case-sensitive and should be Pending, Rejected, Accepted,  Offer retracted or Offer expired';
 	error4 varchar := 'Price should be numeric and greater than 0!';
 	message varchar := '';
 BEGIN
@@ -121,7 +103,7 @@ BEGIN
 		THEN message := error1;
 	ELSEIF NOT EXISTS (SELECT advertisementid FROM advertisements WHERE advertisementid = _advertisementID)
 		THEN message := error2;
-	ELSEIF (_status <> 'Pending' AND _status <> 'Accepted' AND _status <> 'Expired' AND _status <> 'Rejected')
+	ELSEIF (_status <> 'Pending' AND _status <> 'Rejected' AND _status <> 'Accepted' AND _status <> 'Expired' AND _status <> 'Rejected')
 		THEN message := error3;
 	ELSEIF (_price <= 0)
 		THEN message := error4;
