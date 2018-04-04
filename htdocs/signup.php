@@ -116,7 +116,7 @@ if (isset($_POST['submit'])){
                 <input type="password" name="password_repeat" class="form-control" id="inputPasswordRepeat" placeholder="Enter password again" required>
                 <span style="color:red"><?php echo $passwordRepeatError;?></span>
         </div>
-<input type="submit" name="submit" value="Submit">
+	<button type="submit" name="submitForm" class="btn btn-primary">Submit</button>
 </form>
 </body>
 </html>
