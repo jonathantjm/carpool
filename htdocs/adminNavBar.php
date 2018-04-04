@@ -28,9 +28,10 @@ if($isAdmin == 'f') {
                             <a class="dropdown-toggle" data-toggle="dropdown" href="adminBid.php">Bids
                             <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="adminBid.php">View bids</a></li>
+                                <li><a href="adminBid.php">View existing bids</a></li>
                                 <li><a href="adminCreateBid.php">Create bid</a></li>
-                            </ul>
+                                <li><a href="adminBidHistory.php">View past bids</a></li>
+							</ul>
                         </li>
                         <li class ="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="adminOffer.php">Advertisements

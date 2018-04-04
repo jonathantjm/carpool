@@ -18,6 +18,7 @@ if (isset($_POST['submit'])){
         $passwordError = "Wrong password!";
     } else {
         if($row[1] == "t"){
+			$_SESSION['user']= $email;
             $_SESSION['isAdmin']= 't';
             header("Location: adminPage.php");
         } else {
@@ -51,7 +52,7 @@ if (isset($_POST['submit'])){
             <input type="password" name="password" class="form-control" id="inputPassword" required>
             <span style="color:red"><?php echo $passwordError;?></span>
         </div>
-        <input type="submit" name="submit">
+		<button type="submit" name="submitForm" class="btn btn-primary">Submit</button>
     </form>
 </body>
 
