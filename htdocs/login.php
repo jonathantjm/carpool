@@ -4,7 +4,7 @@ include("header.php");
 $emailError="";
 $passwordError="";
 
-if (isset($_POST['submit'])){
+if (isset($_POST['submitForm'])){
     $email = $_POST['email'];
     $password = $_POST['password'];
 
@@ -28,6 +28,9 @@ if (isset($_POST['submit'])){
         }
     }
 }
+
+echo pg_last_error($db);
+
 ?>
 
 <!DOCTYPE html>

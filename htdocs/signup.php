@@ -7,7 +7,7 @@ $emailError = '';
 $passwordRepeatError = '';
 $row = array('', '', '', '', '', '');
 
-if (isset($_POST['submit'])){
+if (isset($_POST['submitForm'])){
     $email = $_POST['email'];
     $name = $_POST['name'];
     $contactNumber = $_POST['contact_number'];
