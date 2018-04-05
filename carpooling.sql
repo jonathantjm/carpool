@@ -35,8 +35,8 @@ CREATE TABLE advertisements (
     closed BOOLEAN DEFAULT FALSE,
     self_select BOOLEAN DEFAULT TRUE,
     CONSTRAINT same_start_end_location CHECK(start_location != end_location),
-    CONSTRAINT pickup_date_before_current_date CHECK(date_of_pickup >= current_date),
-    CONSTRAINT pickup_time_before_current_time CHECK((date_of_pickup = current_date AND time_of_pickup > current_time) OR (date_of_pickup > current_date))
+    CONSTRAINT pickup_date_before_current_date CHECK(date_of_pickup >= creation_date_and_time::date),
+    CONSTRAINT pickup_time_before_current_time CHECK((date_of_pickup = creation_date_and_time::date AND time_of_pickup > creation_date_and_time::time) OR (date_of_pickup > creation_date_and_time::date))
 );
 
 CREATE TABLE advertisementsHistory (
