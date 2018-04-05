@@ -153,3 +153,43 @@ AFTER UPDATE
 ON bid
 FOR EACH ROW
 EXECUTE PROCEDURE updateBidsAndOfferStatus();
+
+
+CREATE OR REPLACE FUNCTION updateAdvertisement()
+RETURNS varchar AS $$
+DECLARE
+currentTimeAndDate timestamp := current_timestamp;
+r1 advertisements%ROWTYPE;
+r2 bid%ROWTYPE;
+r3 advertisements%ROWTYPE;
+BEGIN
+    FOR r1 IN
+        SELECT * FROM advertisements
+        WHERE (date_of_pickup + time_of_pickup) <= (current_timestamp + INTERVAL '1 hour')
+        AND self_select = FALSE
+        LOOP
+        FOR r2 IN
+            SELECT * FROM bid
+            WHERE bid.advertisementID = r1.advertisementID
+            ORDER BY price DESC, creation_date_and_time
+            LIMIT 1
+            LOOP
+                UPDATE bid SET status = 'Accepted' WHERE bid.advertisementID = r2.advertisementID AND bid.email = r2.email;
+            END LOOP;
+        END LOOP;
+    FOR r3 IN
+        SELECT *
+        FROM advertisements
+        WHERE (date_of_pickup + time_of_pickup) <= (current_timestamp + INTERVAL '30 minutes')
+        LOOP
+            UPDATE advertisements SET closed = true WHERE advertisements.advertisementID = r3.advertisementID;
+            INSERT INTO advertisementsHistory(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select)
+            SELECT email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select FROM advertisements WHERE advertisements.advertisementID = r3.advertisementID;
+            DELETE FROM advertisements WHERE advertisements.advertisementID = r3.advertisementID;
+        END LOOP;
+RETURN 'Update complete';
+END;
+$$
+LANGUAGE plpgsql;
+
+

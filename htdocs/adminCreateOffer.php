@@ -43,6 +43,9 @@ if (isset($_POST['submit'])) {
     else if(strpos($error, 'pickup_time_before_current_time') !== false){
         $timeError = 'Time is before current time!';
     }
+    else if(strpos($error, 'offer_too_soon') !== false){
+        $timeError = 'Date and time of pickup cannot be less than one hour from current time!';
+    }
     else if (strpos($error, 'email') !== false) {
         $emailError = 'Account for this email does not exist!';
     } else {
