@@ -3,7 +3,8 @@
 session_start();
 //Please insert your password before continuing
 $db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=XXX");
-
+//Procedure for removing outdated advertisements
+$update = pg_query($db, 'SELECT updateAdvertisement()');
 //Set default timezone
 date_default_timezone_set("Singapore");
 
