@@ -3,9 +3,9 @@ include("header.php");
 include("adminNavBar.php");
 
 //Initialize potential errors
-$emailError = '';
-$adIdError = '';
-$priceError = '';
+$emailError;
+$adIdError;
+$priceError;
 $row = array('Enter email', 'Enter advertisement id', 'Enter bidding price');
 
 if (isset($_POST['submitForm'])) {
@@ -13,9 +13,8 @@ if (isset($_POST['submitForm'])) {
     $email = $_POST['email'];
     $advertisementID = $_POST['advertisementID'];
     $price = $_POST['price'];
-    $creationDateAndTime = date("Y/m/d h:i:s");
 
-    $query = pg_query_params($db, "SELECT admin_addBid($1, $2, $3, $4)", array($email, $advertisementID, $price, $creationDateAndTime));
+    $query = pg_query_params($db, "SELECT addBid($1, $2, $3)", array($email, $advertisementID, $price));
 
     $row[0] = $email;
     $row[1] = $advertisementID;
@@ -23,17 +22,16 @@ if (isset($_POST['submitForm'])) {
 
     $result = pg_fetch_array($query);
     $error = $result[0];
-    
-    if (preg_match('/email/i', $error) OR preg_match('/own/i', $error)) {
+	
+    if (($error === 'You cannot bid for your own offer!') OR ($error === 'Your email is invalid!') OR ($error === 'You have already submitted a bid for this offer!')) {
         $emailError = $error;
-    } elseif (preg_match('/advertisement/i', $error)) {
+    } elseif (($error === 'Advertisement id does not exist!') OR ($error === 'Sorry, advertisement has already been closed!')) {
         $adIdError = $error;
-    } elseif (preg_match('/price/i', $error)) {
+    } elseif ($error === 'Price should be numeric and greater than 0!') {
         $priceError = $error;
     } elseif ($error == '') {
-        header("Location: adminBid.php");
+		header("Location: adminBid.php");
     }
-
 }
 ?>
 

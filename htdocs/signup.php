@@ -41,6 +41,8 @@ if (isset($_POST['submitForm'])){
         } else if (preg_match('/Plate/i', $result[0])) {
             $vehiclePlateError = $result[0];
         } else {
+			$_SESSION['user']= $row[2];
+			$_SESSION['isAdmin']= 'f';
             header("Location: userPage.php");
         }
 

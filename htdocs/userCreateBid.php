@@ -5,111 +5,72 @@ include("userNavBar.php");
 $email = $_SESSION['user'];
 $advertisementID = $_GET['id'];
 
-$advertisement = pg_query($db, "SELECT * FROM advertisements, useraccount
-	WHERE email_of_driver = email
-	AND   advertisementid = " . $advertisementID . ";"); 
+$advertisement = pg_query_params($db, "SELECT * FROM advertisements ad, useraccount acc WHERE acc.email = $1 AND ad.advertisementid = $2", array($email, $advertisementID)); 
 
-//If no advertisement id found
-if (pg_num_rows($advertisement) == 0){
-	$message = "An error occured!";
-	echo "<script type='text/javascript'>alert('$message');
-		window.location.href='userPage.php';
-	</script>";
-}
-
-$advertisement_result = pg_fetch_assoc($advertisement);
-
-//If advertisement already closed
-if ($advertisement_result['closed'] == 't'){
-	$message = "Offer has already been closed!";
-	echo "<script type='text/javascript'>alert('$message');
-		window.location.href='userPage.php';
-	</script>";
-}
-
-//If bidder is also owner of offer
-if ($advertisement_result['email'] == $email){
-	$message = "You cannot bid for your own offer!";
-	echo "<script type='text/javascript'>alert('$message');
-		window.location.href='userPage.php';
-	</script>";
-}
-
-$multiple_bid_check = pg_query_params($db, "SELECT * FROM bid
-	WHERE 	email = $1
-	AND 	advertisementid = $2
-	", array($email, $advertisementID)
-);
-
-//If already bid for this offer
-if (pg_num_rows($multiple_bid_check) > 0){
-	$message = "You've already submitted a bit for this offer!";
-	echo "<script type='text/javascript'>alert('$message');
-		window.location.href='userPage.php';
-	</script>";
-}
+$row = pg_fetch_assoc($advertisement);
+$msg;
+$price = 0;
 
 if (isset($_POST['submit'])) {
 	
 	$price = $_POST['price'];
-	
-	pg_query_params("INSERT INTO 
-		bid (email, advertisementid, price, creation_date_and_time)
-		VALUES ($1, $2, $3, NOW())",
-		array($email, $advertisementID, $price)
-	);
-	
-	echo pg_last_error($db);
-	
-		header("Location: userBid.php");
 
+	$query = pg_query_params($db, "SELECT addBid($1, $2, $3)", array($email, $advertisementID, $price));
+	
+	$result = pg_fetch_array($query);
+    $error = $result[0];
+
+    $error = $result[0];
+    if (($error === 'You cannot bid for your own offer!') OR ($error === 'Your email is invalid!') OR ($error === 'You have already submitted a bid for this offer!')) {
+        $emailError = $error;
+    } elseif (($error === 'Advertisement id does not exist!') OR ($error === 'Sorry, advertisement has already been closed!')) {
+        $adIdError = $error;
+    } elseif ($error === 'Price should be numeric and greater than 0!') {
+        $priceError = $error;
+    } elseif ($error == '') {
+		header("Location: userBid.php");
+    }
 }
 
+echo "<script type='text/javascript' class='init'>
+		$(document).ready(function() {
+			$('#table').DataTable();
+		});
+	</script>";
 ?>
 
 <html>
-
-<h1>Bid and Driver details</h1>
-
-<table>
-
-<?php
-	echo "<tr>" ;
-		echo "<td> Start Location: </td>";
-		echo "<td>" . $advertisement_result['start_location'] . "</td>";
-	echo "</tr>";
-	echo "<tr>" ;
-		echo "<td> End Location: </td>";
-		echo "<td>" . $advertisement_result['end_location'] . "</td>";
-	echo "</tr>";
-	echo "<tr>" ;
-		echo "<td> Pick Up Date: </td>";
-		echo "<td>" . $advertisement_result['date_of_pickup'] . "</td>";
-	echo "</tr>";
-	echo "<tr>" ;
-		echo "<td> Pick Up Time: </td>";
-		echo "<td>" . $advertisement_result['time_of_pickup'] . "</td>";
-	echo "</tr>";
-	echo "<tr>" ;
-		echo "<td> Driver Gender: </td>";
-		echo "<td>" . $advertisement_result['gender'] . "</td>";
-	echo "</tr>";
-	echo "<tr>" ;
-		echo "<td> Driver Capacity: </td>";
-		echo "<td>" . $advertisement_result['capacity'] . "</td>";
-	echo "</tr>";
+	<h1 class="text-center">Bid and Driver details</h1>
+	<table id="table" class="table table-striped table-bordered" style="width:100%">
+<?php 
+echo "<thead>
+	<tr>
+		<th>Start Location</th>
+		<th>End Location</th>
+		<th>Pick up date</th>
+		<th>Pick up time</th>
+		<th>Driver gender</th>
+		<th>Vehicle capacity</th>
+    </tr>
+	</thead>";
+echo "<tbody>";
+	echo "<tr>";
+		echo "<td>" . $row['start_location'] . "</td>";
+		echo "<td>" . $row['end_location'] . "</td>";
+		echo "<td>" . $row['date_of_pickup'] . "</td>";
+		echo "<td>" . $row['time_of_pickup'] . "</td>";
+		echo "<td>" . $row['gender'] . "</td>";
+		echo "<td>" . $row['capacity'] . "</td>";
+	echo "</tr>
+	</tbody>";
 ?>
-
-</table><br><br>
-
-<h2> Enter your bid: </h2>
-
-<form action="" method="post">
-
-<strong>Enter your bid: </strong> <input type="number" name="price" required /><br/>
-
-<input type="submit" name="submit" value="Submit">
-
-</form>
-
+	</table>
+	<form action="" method="post">
+		<div class="form-group">
+			<label for="inputPrice">Enter bidding price</label>
+			<input type="text" pattern="(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{1,2}))?)" name="price" class="form-control" id="inputPrice" placeholder="<?php echo $price; ?>" required>
+			<span style="color:red"><?php echo $msg; ?></span>
+		</div>
+		<button type="submit" name="submit" class="btn btn-primary">Bid</button>
+	</form>
 </html>

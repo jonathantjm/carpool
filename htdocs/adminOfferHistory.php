@@ -2,7 +2,7 @@
 include("header.php");
 include("adminNavBar.php");
 
-$result = pg_query($db, 'SELECT * FROM bidHistory ORDER BY creation_date_and_time DESC');
+$result = pg_query($db, 'SELECT DISTINCT * FROM advertisemnetHistory ORDER BY email, creation_date_and_time DESC');
 $counter = 1;
 
 echo "<script type='text/javascript' class='init'>
@@ -15,20 +15,19 @@ echo "<script type='text/javascript' class='init'>
 <html>
 	<body>
 	<div>
-		<h1 class="text-center">Past Bidding Information</h1>
+		<h1 class="text-center">Past Advertisements Information</h1>
 		<table id="table" class="table table-striped table-bordered" style="width:100%">
 <?php 
 echo "<thead>
 		<tr>
 			<th>S/N</th>
 			<th>Email</th>
-			<th>Status</th>
-			<th>Price(SGD)</th>
+			<th>Start Location</th>
+			<th>End Location</th>
 			<th>Date and time created</th>
-			<th>Start location</th>
-			<th>End location</th>
 			<th>Date of pickup</th>
 			<th>Time of pickup</th>
+			<th>Driver self-select</th>
 		</tr>
 	</thead>";
 echo "<tbody>";
@@ -42,7 +41,6 @@ while($row = pg_fetch_array( $result )) {
 		echo "<td>" . $row[4] . "</td>";
 		echo "<td>" . $row[5] . "</td>";
 		echo "<td>" . $row[6] . "</td>";
-		echo "<td>" . $row[7] . "</td>";
 	echo "</tr>";
 	$counter++;
 }

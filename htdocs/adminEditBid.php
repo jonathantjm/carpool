@@ -15,27 +15,24 @@ $statusError = '';
 
 if (isset($_POST['submitForm'])) {
 	
-	$newMail = $_POST['email'];
-	$newID = $_POST['advertisementID'];
-	$newStatus = $_POST['status'];
-	$newPrice = $_POST['price'];
+	$status = $_POST['status'];
+	$price = $_POST['price'];
 
-	$query = pg_query_params($db, "SELECT admin_editBid($1, $2, $3, $4, $5, $6, $7)", array($email, $advertisementID, $newMail, $newID, $newStatus, $newPrice, $dateAndTime));
+	$query = pg_query_params($db, "SELECT editBid($1, $2, $3, $4, $5)", array($email, $advertisementID, $status, $price, $row[4]));
 	$result = pg_fetch_array($query);
 	$error = $result[0];
-	
-	if (preg_match('/email/i', $error)) {
+    if (($error === 'You cannot bid for your own offer!') OR ($error === 'Your email is invalid!')) {
 		$emailError = $error;
-	} elseif (preg_match('/advertisement/i', $error)) {
+    } elseif (($error === 'Advertisement id does not exist!') OR ($error === 'Sorry, advertisement has already been closed!') 
+		OR ($error === 'Please make sure you have an existing bid for that offer!')) {
 		$adIdError = $error;
-	} elseif (preg_match('/price/i', $error)) {
+    } elseif ($error === 'Price should be numeric and greater than 0!') {
 		$priceError = $error;
-	} elseif (preg_match('/status/i', $error)) {
-		$statusError = $error;
+    } elseif ($error === 'Status is case-sensitive and should be Pending, Rejected, Accepted, Offer retracted or Offer expired') {
+		$statusError='';
 	} elseif ($error == '') {
 		header("Location: adminBid.php");
-	}
-
+    }
 }
 ?>
 
@@ -43,20 +40,15 @@ if (isset($_POST['submitForm'])) {
 	<body>
 		<h2>Edit Bid</h2>
 		<form action="" method="post">
-			<div class='form-group'>
-				<label for='inputEmail'>Email address</label>
-				<input type="email" name="email" class="form-control" id="inputEmail" placeholder="<?php echo $row[0]; ?>" required>
-				<span style="color:red"><?php echo $emailError; ?></span>
-			</div>
-			<div class='form-group'>
-				<label for='inputID'>Advertisement ID</label>
-				<input type='text' name="advertisementID" class='form-control' id='inputID' placeholder="<?php echo $row[1]; ?>" required>
-				<span style="color:red"><?php echo $adIdError; ?></span>
-			</div>
-			<div class='form-group'>
-				<label for='inputStatus'>Status</label>
-				<input type='text' name='status' class='form-control' id='inputStatus' placeholder="<?php echo $row[2]; ?>" required>
-				<span style="color:red"><?php echo $statusError; ?></span>
+			<div class="form-group">
+				<label for="status">Status (Select one):</label>
+				<select class="form-control" id="status" name='status'>
+					<option>Pending</option>
+					<option>Accepted</option>
+					<option>Rejected</option>
+					<option>Offer retracted</option>
+					<option>Offer expired</option>
+				</select>
 			</div>
 			<div class='form-group'>
 				<label for='inputPrice'>Price</label>
