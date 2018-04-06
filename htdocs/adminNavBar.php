@@ -39,6 +39,7 @@ if($isAdmin == 'f') {
                             <ul class="dropdown-menu">
                                 <li><a href="adminOffer.php">View offers</a></li>
                                 <li><a href="adminCreateOffer.php">Create offer</a></li>
+                                <li><a href="adminOfferHistory.php">View past offers</a></li>
                             </ul>
                         </li>
                         <li class ="dropdown">
