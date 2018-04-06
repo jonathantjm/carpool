@@ -16,6 +16,21 @@ END;
 $BODY$
 language 'plpgsql' volatile;
 
+-- add an advertisement
+CREATE OR REPLACE FUNCTION add_advertisement(_email varchar, _startLocation varchar, _endLocation varchar, _creationDateAndTime timestamp, _pickupDate date, _pickupTime time, _selfSelect boolean)
+returns varchar as
+$BODY$
+BEGIN
+IF NOT EXISTS (SELECT email FROM useraccount WHERE email = _email) THEN return 'Account for this email does not exist!';
+ELSEIF (_startLocation == _endLocation) THEN return 'Cannot have the same start and end location!';
+ELSEIF ((_pickupDate + _pickupTime) <= (current_timestamp + INTERVAL '1 hour')) THEN RETURN 'Pick-up date and time must be at least 1 hour from now!';
+END IF;
+INSERT INTO advertisements(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select) VALUES (_email,_startLocation, _endLocation, _creationDateAndTime, _pickupDate, _pickupTime, _selfSelect);
+return 'Account has been successfully created!';
+END;
+$BODY$
+language 'plpgsql' volatile;
+
 -- delete advertisement and place deleted advertisement into advertisementsHistory
 CREATE OR REPLACE FUNCTION delete_advertisement(_advertisementID bigint)
 returns varchar as
@@ -52,7 +67,7 @@ BEGIN
             SELECT B1.email, B1.status, B1.price, B1.creation_date_and_time, A1.start_location, A1.end_location, A1.date_of_pickup, A1.time_of_pickup FROM bid B1, advertisements A1 WHERE B1.advertisementID = A1.advertisementID AND A1.advertisementID = NEW.advertisementID;
 		DELETE FROM bid WHERE advertisementID = NEW.advertisementID AND email = NEW.email;
    END IF;
-RETURN NEW;
+RETURN NULL;
 END;
 $bid_table$ LANGUAGE plpgsql;
 
@@ -151,7 +166,7 @@ EXECUTE PROCEDURE expireBidIfAdClosed();
 CREATE TRIGGER updateBidsAndOffer 
 AFTER UPDATE
 ON bid
-FOR EACH ROW
+FOR EACH STATEMENT
 EXECUTE PROCEDURE updateBidsAndOfferStatus();
 
 
@@ -172,7 +187,6 @@ BEGIN
             SELECT * FROM bid
             WHERE bid.advertisementID = r1.advertisementID
             ORDER BY price DESC, creation_date_and_time
-            LIMIT 1
             LOOP
                 UPDATE bid SET status = 'Accepted' WHERE bid.advertisementID = r2.advertisementID AND bid.email = r2.email;
             END LOOP;

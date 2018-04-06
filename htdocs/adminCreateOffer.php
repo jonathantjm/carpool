@@ -10,7 +10,6 @@ $timeError = '';
 $row = array('', '', '', '', '', '');
 
 $locations = pg_query($db, "SELECT * FROM locations"); 
-$max_advertisementID = pg_query($db, "SELECT max(advertisementID) FROM advertisements"); 
 
 if (isset($_POST['submit'])) {
 
@@ -21,7 +20,7 @@ if (isset($_POST['submit'])) {
     $time_of_pickup = $_POST['time_of_pickup'];
     $self_select = $_POST['self_select'];
 
-    pg_query_params("INSERT INTO advertisements (email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select) VALUES ($1, $2, $3, NOW(), $4, $5, $6)", array($email, $start_location, $end_location, $date_of_pickup, $time_of_pickup, $self_select));
+    $tempResult = pg_query_params($db, "SELECT add_advertisement($1, $2, $3, NOW(), $4, $5, $6)", array($email, $start_location, $end_location, $date_of_pickup, $time_of_pickup, $self_select));
 
     $row[0] = $email;
     $row[1] = $start_location;
@@ -29,22 +28,19 @@ if (isset($_POST['submit'])) {
     $row[3] = $date_of_pickup;
     $row[4] = $time_of_pickup;
     $row[5] = $self_select;
+    $result = pg_fetch_array($tempResult);
+    $tempError = pg_last_error($db);
 
-    $error =  pg_last_error($db);
+    $error =  $result[0];
     if ($error == ''){
-        header("Location: adminOffer.php");	
+        echo $tempError;
+        //header("Location: adminOffer.php");	
     }
-    else if(strpos($error, 'same_start_end_location') !== false){		
-        $locationError = 'Cannot have the same start and end location!';
+    else if(strpos($error, 'location') !== false){		
+        $locationError = $error;
     }
-    else if(strpos($error, 'pickup_date_before_current_date') !== false){
-        $dateError = 'Date cannot be before current date!';
-    }
-    else if(strpos($error, 'pickup_time_before_current_time') !== false){
-        $timeError = 'Time is before current time!';
-    }
-    else if(strpos($error, 'offer_too_soon') !== false){
-        $timeError = 'Date and time of pickup cannot be less than one hour from current time!';
+    else if(strpos($error, 'hour') !== false){
+        $timeError = $error;
     }
     else if (strpos($error, 'email') !== false) {
         $emailError = 'Account for this email does not exist!';
