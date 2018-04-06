@@ -55,10 +55,8 @@ $counter = 1;
 ?>
 
 <strong>Date Of Pickup: </strong> <input type="date" name="date_of_pickup"><br/>
-
 <strong>Time Range: </strong> <input type="time" name="start_time" step = "900"> <input type="time" name="end_time" step = "900"/><br/>
-
-<input type="submit" name="button" value="Submit">
+<button type="submit" name="button" class="btn btn-primary">Submit</button>
 
 <?php
 
@@ -68,8 +66,6 @@ if(isset($_POST['button'])){
 	$date_of_pickup = $_POST['date_of_pickup'];
 	$start_time = $_POST['start_time'];
 	$end_time = $_POST['end_time'];
-	echo $date_of_pickup;
-	echo $start_time;
 
 	$query_string = "SELECT * FROM advertisements WHERE ";
 
@@ -120,7 +116,7 @@ if(isset($_POST['button'])){
 				echo "<td>" . $row['end_location'] . "</td>";
 				echo "<td>" . $row['date_of_pickup'] . "</td>";
 				echo "<td>" . $row['time_of_pickup'] . "</td>";
-				echo "<td><a href='userCreateBid.php?id=".$row['advertisementid']."'>Bid</a></td>";
+				echo "<td><a href='userCreateBid.php?id=".$row['advertisementid']."' class='btn btn-primary' role='button'>Bid</a></td>";
 			echo "</tr>";
 			$counter++;
 		}	
@@ -167,8 +163,8 @@ if (pg_num_rows($result) > 0){
 			echo "<td>" . $row['time_of_pickup'] . "</td>";
 			echo "<td>" . $row['price'] . "</td>";
 			echo "<td>" . $row['status'] . "</td>";
-			echo "<td><a href='userDeleteBid.php?id=".$row['advertisementid']."'>Delete</a></td>";
-			echo "<td><a href='userEditBid.php?id=".$row['advertisementid']."'>Edit</a></td>";
+			echo "<td><a href='userDeleteBid.php?id=".$row['advertisementid']."' class='btn btn-primary' role='button'>Delete</a></td>";
+			echo "<td><a href='userEditBid.php?id=".$row['advertisementid']."' class='btn btn-primary' role='button'>Edit</a></td>";
 		echo "</tr>";
 		$count++;
 	}

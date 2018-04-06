@@ -116,15 +116,15 @@ END;
 $$ LANGUAGE plpgsql;
 
 --Function for admin to edit bid
-CREATE OR REPLACE FUNCTION editBid(_oldEmail varchar, _oldID integer, _email varchar, _advertisementID bigint, _status varchar, _price numeric, _creationDateTime TIMESTAMP) RETURNS varchar AS $$
+CREATE OR REPLACE FUNCTION editBid(_email varchar, _advertisementID bigint, _status varchar, _price numeric, _creationDateTime TIMESTAMP) RETURNS varchar AS $$
 DECLARE
     error0 varchar := 'You cannot bid for your own offer!';
 	error1 varchar := 'Your email is invalid!';
 	error2 varchar := 'Advertisement id does not exist!';
 	error3 varchar := 'Status is case-sensitive and should be Pending, Rejected, Accepted,  Offer retracted or Offer expired';
 	error4 varchar := 'Price should be numeric and greater than 0!';
-	error5 varchar := 'You have already submitted a bid for this offer!';
-	error6 varchar := 'Sorry, advertisement has already been closed!';
+	error5 varchar := 'Sorry, advertisement has already been closed!';
+	error6 varchar := 'Please make sure you have an existing bid for that offer!';
 	message varchar := '';
 BEGIN
     IF EXISTS (SELECT email_of_driver FROM advertisements WHERE advertisementID = _advertisementID AND email_of_driver = _email)
@@ -137,12 +137,12 @@ BEGIN
 		THEN message := error3;
 	ELSEIF (_price <= 0)
 		THEN message := error4;
-	ELSEIF (SELECT COUNT(*) FROM bid WHERE email = _email AND advertisementID = _advertisementID) > 0
-		THEN message := error5;
 	ELSEIF (SELECT closed FROM advertisements WHERE advertisementID = _advertisementID) IS TRUE
+		THEN message := error5;
+	ELSEIF NOT EXISTS (SELECT email, advertisementid FROM bid WHERE email = _email AND advertisementid = _advertisementID)
 		THEN message := error6;
 	ELSE
-		UPDATE bid SET email = _email, advertisementid = _advertisementID, status = _status, price = _price, creation_date_and_time = _creationDateTime WHERE advertisementid = _oldID AND email = _oldEmail;
+		UPDATE bid SET status = _status, price = _price, creation_date_and_time = _creationDateTime WHERE advertisementid = _advertisementID AND email = _email;
 	END IF;
 	RETURN message;
 END;
@@ -182,7 +182,7 @@ EXECUTE PROCEDURE expireBidIfAdClosed();
 CREATE TRIGGER updateBidsAndOffer 
 AFTER UPDATE
 ON bid
-FOR EACH STATEMENT
+FOR EACH ROW
 EXECUTE PROCEDURE updateBidsAndOfferStatus();
 
 

@@ -22,6 +22,7 @@ if (isset($_POST['submitForm'])) {
 
     $result = pg_fetch_array($query);
     $error = $result[0];
+	
     if (($error === 'You cannot bid for your own offer!') OR ($error === 'Your email is invalid!') OR ($error === 'You have already submitted a bid for this offer!')) {
         $emailError = $error;
     } elseif (($error === 'Advertisement id does not exist!') OR ($error === 'Sorry, advertisement has already been closed!')) {

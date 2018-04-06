@@ -31,6 +31,12 @@ if (isset($_POST['submit'])) {
 		header("Location: userBid.php");
     }
 }
+
+echo "<script type='text/javascript' class='init'>
+		$(document).ready(function() {
+			$('#table').DataTable();
+		});
+	</script>";
 ?>
 
 <html>
@@ -59,10 +65,9 @@ echo "<tbody>";
 	</tbody>";
 ?>
 	</table>
-	<h4>Enter your bid:</h4>
 	<form action="" method="post">
 		<div class="form-group">
-			<label for="inputPrice">Price</label>
+			<label for="inputPrice">Enter bidding price</label>
 			<input type="text" pattern="(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{1,2}))?)" name="price" class="form-control" id="inputPrice" placeholder="<?php echo $price; ?>" required>
 			<span style="color:red"><?php echo $msg; ?></span>
 		</div>
