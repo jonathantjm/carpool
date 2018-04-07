@@ -2,9 +2,22 @@
 include("header.php");
 include("userNavBar.php");
 
+$checkEmail = $_SESSION['user'];
+$checkResult1 = pg_query_params($db, 'SELECT is_driver FROM useraccount WHERE email = $1', array($checkEmail));
+$checkResult2 = pg_fetch_array($checkResult1);
+
+if($checkResult2[0] == 'f'){
+    $message = "A non-driver cannot create offers!";
+    echo "<script type='text/javascript'>alert('$message');
+    window.location.href='userPage.php';
+    </script>";
+}
+
+$locationError = $isUserDriver;
+
 $locations = pg_query($db, "SELECT * FROM locations");
 
-$locationError = '';
+//$locationError = '';
 $dateError = '';
 $timeError = '';
 
