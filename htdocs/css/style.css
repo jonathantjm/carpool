@@ -1,14 +1,260 @@
-html, 
-body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
+
+
+
+.btn-xl {
+    height: 50px;
+    padding: 10px 20px;
+    font-size: 40px;
+    border-radius: 40px;
+    width:100%;
 }
 
-#backgroundimage {
-	background-image: url(images/taxi.jpg);
-	background-size: 100% 100%;
+#indexpage {
+	background-image: url(images/taxi2.jpg);
+	background-size: cover;
 	background-repeat: no-repeat;
 	position: center;
+}
+
+#loginpage {
+    background-image: url(images/taxi.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+
+#b1 {
+    background-image: url(images/b1.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+
+#b2 {
+    background-image: url(images/b2.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b3 {
+    background-image: url(images/b3.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b4 {
+    background-image: url(images/b4.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b5 {
+    background-image: url(images/b5.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b6 {
+    background-image: url(images/b6.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b7 {
+    background-image: url(images/b7.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b8 {
+    background-image: url(images/b8.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b9 {
+    background-image: url(images/b9.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b10 {
+    background-image: url(images/b10.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b11 {
+    background-image: url(images/b11.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b12 {
+    background-image: url(images/b12.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+
+#b13 {
+    background-image: url(images/b13.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+
+#b14 {
+    background-image: url(images/b14.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b15 {
+    background-image: url(images/b15.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b16 {
+    background-image: url(images/b16.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+#b17 {
+    background-image: url(images/b17.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+
+#b18 {
+    background-image: url(images/b18.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+
+#b19 {
+    background-image: url(images/b19.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+
+#b20 {
+    background-image: url(images/b20.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+
+
+#b21 {
+    background-image: url(images/b21.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+
+
+#b22 {
+    background-image: url(images/b22.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+
+#b23 {
+    background-image: url(images/b22.jpg);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: center;
+
+}
+
+#adminpage { 
+	background: url(images/adminpage.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+#divTable {
+	border-radius: 25px;
+	padding: 10px;
+	background-color: white;
+	opacity: 0.9;
+	margin: 0 auto;
+	width: 80%;
+}
+
+#divForm {
+	border-radius: 25px;
+	padding: 10px;
+	background-color: white;
+	opacity: 0.9;
+	margin: 0 auto;
+	width: 60%;
+}
+
+.back-to-top {
+    cursor: pointer;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display:none;
+}
+
+label {
+	color: blue;
+}
+
+.wrapper {
+  min-height: 100%;
+
+  /* Equal to height of footer */
+  /* But also accounting for potential margin-bottom of last child */
+  margin-bottom: -50px;
+}
+
+.footer {
+	height: 50px;
+	padding: 1em;
+    color: white;
+    background-color: black;
+    clear: left;
+    text-align: center;
+}
+.push {
+  height: 50px;
+}
+
+#darkheader {
+	text-color: black;
 }

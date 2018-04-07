@@ -13,7 +13,7 @@ if (isset($_POST['submitForm'])){
 
     $error = pg_last_error($db);
     if (!isset($row[0])) {
-        $emailError = 'There is no such email in use.';
+        $emailError = "There is no such email in use!";
     } else if(!($password == $row[0])){
         $passwordError = "Wrong password!";
     } else {
@@ -28,35 +28,41 @@ if (isset($_POST['submitForm'])){
         }
     }
 }
-
-echo pg_last_error($db);
-
 ?>
 
-<!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-
-<body>
-    <h2>Login Below</h2>
-    <form method="post" name="form" action="login.php">
-        <div class='form-group'>
-            <label for="inputEmail">Email: </label>
-            <input type="email" name="email" class="form-control" id="inputEmail" required>
-            <span style="color:red"><?php echo $emailError;?></span>
-        </div>
-        <div class='form-group'>
-            <label for="inputPassword">Password: </label>
-            <input type="password" name="password" class="form-control" id="inputPassword" required>
-            <span style="color:red"><?php echo $passwordError;?></span>
-        </div>
-		<button type="submit" name="submitForm" class="btn btn-primary">Submit</button>
-    </form>
-</body>
-
+	<head>
+		<style>
+			html, body {
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				overflow-x: hidden;
+			}	
+		</style>
+	</head>
+	<body id="loginpage">
+		<div class ="wrapper">
+			<div class="col-lg-12" style="height:150px;"></div>
+			<h2 class="text-center">Login</h2>
+			<div id="divForm">
+				<form method="post" name="form" action="login.php">
+					<div class='form-group'>
+						<label for="inputEmail">Email: </label>
+						<input type="email" name="email" class="form-control" id="inputEmail" required>
+						<span style="color:red"><?php echo $emailError;?></span>
+					</div>
+					<div class='form-group'>
+						<label for="inputPassword">Password: </label>
+						<input type="password" name="password" class="form-control" id="inputPassword" required>
+						<span style="color:red"><?php echo $passwordError;?></span>
+					</div>
+					<button type="submit" name="submitForm" class="btn btn-primary">Submit</button>
+				</form>
+			</div>
+			<div class="push"></div>
+		</div>
+		<footer class="footer">Copyright &copy; CS2102 Team 20</footer>
+	</body>
 </html>

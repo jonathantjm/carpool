@@ -70,7 +70,7 @@ END;
 $bid_table$ LANGUAGE plpgsql;
 
 
---Function for admin to add new bid
+--Function to add new bid
 CREATE OR REPLACE FUNCTION addBid(_email varchar, _advertisementID bigint, _price numeric) RETURNS varchar AS $$
 DECLARE
 --own, email, id, price, submitted, closed
@@ -101,7 +101,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---Function for admin to edit bid
+--Function to edit bid
 CREATE OR REPLACE FUNCTION editBid(_email varchar, _advertisementID bigint, _status varchar, _price numeric, _creationDateTime TIMESTAMP) RETURNS varchar AS $$
 DECLARE
     error0 varchar := 'You cannot bid for your own offer!';

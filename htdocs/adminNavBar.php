@@ -12,6 +12,34 @@ if($isAdmin == 'f') {
 		window.location.href='login.php';
 	</script>";
 }
+
+echo "<script type='text/javascript' class='init'>
+		$(document).ready(function() {
+			$('#table').DataTable();
+		});
+	</script>";
+	
+echo "<script type='text/javascript'>
+	$(document).ready(function(){
+		$(window).scroll(function () {
+            if ($(this).scrollTop() > 50) {
+                $('#back-to-top').fadeIn();
+            } else {
+                $('#back-to-top').fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        $('#back-to-top').click(function () {
+            $('#back-to-top').tooltip('hide');
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+        
+        $('#back-to-top').tooltip('show');
+	});
+	</script>";
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +56,7 @@ if($isAdmin == 'f') {
                             <a class="dropdown-toggle" data-toggle="dropdown" href="adminBid.php">Bids
                             <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="adminBid.php">View existing bids</a></li>
+                                <li><a href="adminBid.php">View bids</a></li>
                                 <li><a href="adminCreateBid.php">Create bid</a></li>
                                 <li><a href="adminBidHistory.php">View past bids</a></li>
 							</ul>
