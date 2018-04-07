@@ -37,25 +37,27 @@ if (isset($_POST['submitForm'])) {
 ?>
 
 <html>
-	<body>
-		<h2>Edit Bid</h2>
-		<form action="" method="post">
-			<div class="form-group">
-				<label for="status">Status (Select one):</label>
-				<select class="form-control" id="status" name='status'>
-					<option>Pending</option>
-					<option>Accepted</option>
-					<option>Rejected</option>
-					<option>Offer retracted</option>
-					<option>Offer expired</option>
-				</select>
-			</div>
-			<div class='form-group'>
-				<label for='inputPrice'>Price</label>
-				<input type="text" pattern="(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{1,2}))?)" name="price" class="form-control" id="inputPrice" placeholder="<?php echo $row[3]; ?>" required>
-				<span style="color:red"><?php echo $priceError; ?></span>
-			</div>
-			<button type="submit" name="submitForm" class="btn btn-primary">Submit</button>
-		</form>
+	<body id = 'adminpage'>
+		<h2 class="text-center">Edit Bid</h2>
+		<div id='divForm'>
+			<form action="" method="post">
+				<div class="form-group">
+					<label for="status">Status (Select one):</label>
+					<select class="form-control" id="status" name='status'>
+						<option>Pending</option>
+						<option>Accepted</option>
+						<option>Rejected</option>
+						<option>Offer retracted</option>
+						<option>Offer expired</option>
+					</select>
+				</div>
+				<div class='form-group'>
+					<label for='inputPrice'>Price</label>
+					<input type="text" pattern="(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{1,2}))?)" name="price" class="form-control" id="inputPrice" value="<?php echo $row[3]; ?>" required>
+					<span style="color:red"><?php echo $priceError; ?></span>
+				</div>
+				<button type="submit" name="submitForm" class="btn btn-primary">Submit</button>
+			</form>
+		</div>
 	</body>
 </html>

@@ -53,83 +53,80 @@ if (isset($_POST['submit'])) {
 ?>
 
 <html>
-<body>
-<h2>Edit Offer</h2>
-<form action="" method="post">
-<?php
-$locations_array = array();
-while($row = pg_fetch_array( $locations )) {
-    $locations_array[] = $row[0];
-}
+	<body id = 'adminpage'>
+		<h2 class="text-center">Edit Offer</h2>
+		<div id='divForm'>
+			<form action="" method="post">
+				<?php
+				$locations_array = array();
+				while($row = pg_fetch_array( $locations )) {
+					$locations_array[] = $row[0];
+				}
 
 
-echo "<strong>Start Location: </strong>";
-echo "<select name= \"start_location\" />";
-foreach ($locations_array as $location){
-    if ($location == $adv_row[2]){
-        echo "<option value =\"".$location."\" selected>".$location."</option>";
-    }
-    else{
-        echo "<option value =\"".$location."\" >".$location."</option>";
-    }
-}
-echo "</select><br/></br>";
+				echo "<strong style='color:blue'>Start Location: </strong>";
+				echo "<select name= \"start_location\" />";
+				foreach ($locations_array as $location){
+					if ($location == $adv_row[2]){
+						echo "<option value =\"".$location."\" selected>".$location."</option>";
+					}
+					else{
+						echo "<option value =\"".$location."\" >".$location."</option>";
+					}
+				}
+				echo "</select><br/></br>";
 
-echo "<strong>End Location: </strong>";
-echo "<select name=\"end_location\" />";
-foreach ($locations_array as $location){
-    if ($location == $adv_row[3]){
-        echo "<option value =\"".$location."\" selected>".$location."</option>";
-    }
-    else{
-        echo "<option value =\"".$location."\" >".$location."</option>";
-    }
-}
-echo "</select><br/></br>";
-echo "<span style=\"color:red\">" . $locationError . "</span>";
-echo "</div>";
+				echo "<strong style='color:blue'>End Location: </strong>";
+				echo "<select name=\"end_location\" />";
+				foreach ($locations_array as $location){
+					if ($location == $adv_row[3]){
+						echo "<option value =\"".$location."\" selected>".$location."</option>";
+					}
+					else{
+						echo "<option value =\"".$location."\" >".$location."</option>";
+					}
+				}
+				echo "</select><br/></br>";
+				echo "<span style=\"color:red\">" . $locationError . "</span>";
+				?>
+				<div class='form-group'>
+					<label for="inputPickupTime">Time of pick-up: </label>
+					<?php echo "<input type='time' name='time_of_pickup' class='form-control' id='inputPickupTime' value='" . $adv_row[6] . "' required>";?>
+					<span style="color:red"><?php echo $timeError;?></span>
+				</div>
+				<div class='form-group'>
+					<label for="inputPickupDate">Date of pick-up: </label>
+					<?php echo "<input type='date' name='date_of_pickup' class='form-control' id='inputPickupDate' value='" . $adv_row[5] . "' required>";?>
+					<span style="color:red"><?php echo $dateError;?></span>
+				</div>
+				<div class='form-group'>
+					<label for="offerStatus">Offer status: </label>
+					<?php
+						if($adv_row[7] == 't'){
+							echo "<input type=\"radio\" name=\"offer_status\" value = \"t\" checked/> Open ";
+							echo "<input type=\"radio\" name=\"offer_status\" value = \"f\"/> Closed ";
+						}else{
+							echo "<input type=\"radio\" name=\"offer_status\" value = \"t\"/> Open ";
+							echo "<input type=\"radio\" name=\"offer_status\" value = \"f\" checked/> Closed ";
 
-?>
-    <div class='form-group'>
-        <label for="inputPickupTime">Time of pick-up: </label>
-        <?php echo "<input type='time' name='time_of_pickup' class='form-control' id='inputPickupTime' value='" . $adv_row[6] . "' required>";?>
-        <span style="color:red"><?php echo $timeError;?></span>
-    </div>
-    <div class='form-group'>
-        <label for="inputPickupDate">Date of pick-up: </label>
-        <?php echo "<input type='date' name='date_of_pickup' class='form-control' id='inputPickupDate' value='" . $adv_row[5] . "' required>";?>
-        <span style="color:red"><?php echo $dateError;?></span>
-    </div>
-    <div class='form-group'>
-        <label for="offerStatus">Offer status: </label>
-        <?php
-            if($adv_row[7] == 't'){
-                echo "<input type=\"radio\" name=\"offer_status\" value = \"t\" checked/> Open ";
-                echo "<input type=\"radio\" name=\"offer_status\" value = \"f\"/> Closed ";
-            }else{
-                echo "<input type=\"radio\" name=\"offer_status\" value = \"t\"/> Open ";
-                echo "<input type=\"radio\" name=\"offer_status\" value = \"f\" checked/> Closed ";
+						}
+					?>
+				</div>
+				<div class='form-group'>
+					<label for="offerStatus">Driver self-select: </label>
+					<?php
+						if($adv_row[8] == 't'){
+							echo "<input type=\"radio\" name=\"select_status\" value = \"t\" checked/> Yes ";
+							echo "<input type=\"radio\" name=\"select_status\" value = \"f\"/> No ";
+						}else{
+							echo "<input type=\"radio\" name=\"select_status\" value = \"t\"/> Yes ";
+							echo "<input type=\"radio\" name=\"select_status\" value = \"f\" checked/> No ";
 
-            }
-        ?>
-    </div>
-    <div class='form-group'>
-        <label for="offerStatus">Driver self-select: </label>
-        <?php
-            if($adv_row[8] == 't'){
-                echo "<input type=\"radio\" name=\"select_status\" value = \"t\" checked/> Yes ";
-                echo "<input type=\"radio\" name=\"select_status\" value = \"f\"/> No ";
-            }else{
-                echo "<input type=\"radio\" name=\"select_status\" value = \"t\"/> Yes ";
-                echo "<input type=\"radio\" name=\"select_status\" value = \"f\" checked/> No ";
-
-            }
-        ?>
-    </div>
-<input type="submit" name="submit" value="Submit">
-
-</div>
-
-</form>
-
+						}
+					?>
+				</div>
+				<button type="submit" name="submit" class="btn btn-primary">Submit</button>
+			</form>
+		</div>
+	</body>
 </html>
