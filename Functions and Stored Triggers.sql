@@ -26,7 +26,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- add an advertisement
-CREATE OR REPLACE FUNCTION add_advertisement(_email varchar, _startLocation varchar, _endLocation varchar, _creationDateAndTime timestamp, _pickupDate date, _pickupTime time, _selfSelect boolean)
+CREATE OR REPLACE FUNCTION add_advertisement(_email varchar, _startLocation varchar, _endLocation varchar, _pickupDate date, _pickupTime time, _selfSelect boolean)
 returns varchar as
 $BODY$
 BEGIN
@@ -34,7 +34,7 @@ BEGIN
     ELSEIF (_startLocation = _endLocation) THEN return 'Cannot have the same start and end location!';
     ELSEIF ((_pickupDate + _pickupTime) <= (current_timestamp + INTERVAL '1 hour')) THEN RETURN 'Pick-up date and time must be at least 1 hour from now!';
 END IF;
-INSERT INTO advertisements(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select) VALUES (_email,_startLocation, _endLocation, _creationDateAndTime, _pickupDate, _pickupTime, _selfSelect);
+INSERT INTO advertisements(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select) VALUES (_email,_startLocation, _endLocation, current_timestamp, _pickupDate, _pickupTime, _selfSelect);
 return '';
 END;
 $BODY$
