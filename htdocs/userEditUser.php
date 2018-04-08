@@ -1,4 +1,5 @@
 <?php
+ob_start();
 include("header.php");
 include("userNavBar.php");
 
@@ -6,6 +7,7 @@ include("userNavBar.php");
 $vehiclePlateError = '';
 $emailError = '';
 $driverError = '';
+$offerError = '';
 
 $userMail = $_SESSION['user'];
 $result = pg_query_params($db, 'SELECT * FROM useraccount WHERE email = $1', array($userMail));
@@ -30,12 +32,9 @@ if (isset($_POST['submit'])) {
         $newVehiclePlate = NULL;
     }
 
-     if($newCapacity == ''){
+    if($newCapacity == ''){
         $newCapacity = NULL;
     }
-
-
-    pg_query_params($db, 'UPDATE useraccount SET name = $2, gender = $3, contact_number = $4, email = $5, vehicle_plate = $6, capacity = $7, is_driver = $8 WHERE email = $1', array($userMail, $newName, $newGender, $newContact, $newEmail, $newVehiclePlate, $newCapacity, $isADriver));
 
     $row[0] = $newName;
     $row[1] = $newGender;
@@ -45,16 +44,24 @@ if (isset($_POST['submit'])) {
     $row[6] = $newCapacity;
     $row[7] = $isADriver;
 
-    $error = pg_last_error($db);
+    $existingOffersResults = pg_query_params($db, 'SELECT checkExistingOffer($1)', array($userMail));
+    $existingOffers = pg_fetch_array($existingOffersResults);
 
-    if (preg_match('/email/i', $error)) {
-        $emailError = 'Email is already in use.';
-    } else if (preg_match('/vehicle_plate/i', $error)) {
-        $vehiclePlateError = 'Vehicle plate number is already in use.';
-    } else if (preg_match('/driver_must_fill_in/i', $error)) {
-        $driverError = 'This field must be filled in if you are a driver!';
-    } else {
-        header("Location: userPage.php");
+    if($isADriver == 'n' AND $existingOffers[0] == 't'){
+        $offerError = 'You cannot declare yourself as a non-driver when you have existing offers! Please delete those offers first!';
+    }else{
+        pg_query_params($db, 'UPDATE useraccount SET name = $2, gender = $3, contact_number = $4, email = $5, vehicle_plate = $6, capacity = $7, is_driver = $8 WHERE email = $1', array($userMail, $newName, $newGender, $newContact, $newEmail, $newVehiclePlate, $newCapacity, $isADriver));
+
+        $error = pg_last_error($db);
+        if (preg_match('/email/i', $error)) {
+            $emailError = 'Email is already in use.';
+        } else if (preg_match('/vehicle_plate/i', $error)) {
+            $vehiclePlateError = 'Vehicle plate number is already in use.';
+        } else if (preg_match('/driver_must_fill_in/i', $error)) {
+            $driverError = 'This field must be filled in if you are a driver!';
+        } else {
+            header("Location: userPage.php");
+        }
     }
 }
 
@@ -101,6 +108,7 @@ if($row[7] == "t"){
     echo "<input type=\"radio\" name=\"isDriver\" value = \"n\" checked/> No ";
 }
 ?>
+            <span style='color:red'><?php echo $offerError;?></span>
                 </div>
                 <div class='form-group'>
                     <label for="inputDriver">Vehicle Plate: </label>
