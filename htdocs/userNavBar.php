@@ -35,7 +35,10 @@ if ($isAdmin == null) {
                             </ul>
                         </li>
                         <li>
-                            <a href="userEditUser.php">Edit profile</a>
+                            <a href="userEditProfile.php">Edit profile</a>
+                        </li>
+                        <li>
+                            <a href="userEditPassword.php">Change password?</a>
                         </li>
                     </ul>
                 </div>
