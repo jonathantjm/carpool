@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 //Please insert your password before continuing
 $db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres password=XXX");
@@ -7,10 +6,9 @@ $db = pg_connect("host=localhost port=5432 dbname=car_pooling user=postgres pass
 $update = pg_query($db, 'SELECT updateAdvertisement()');
 //Set default timezone
 date_default_timezone_set("Singapore");
-
+ob_start();
 ?>
 
-<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
