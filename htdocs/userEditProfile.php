@@ -1,7 +1,7 @@
 <?php
 ob_start();
 include("header.php");
-include("adminNavBar.php");
+include("userNavBar.php");
 
 //Initialize potential errors
 $vehiclePlateError = '';
@@ -9,7 +9,7 @@ $emailError = '';
 $driverError = '';
 $offerError = '';
 
-$userMail = $_GET['email'];
+$userMail = $_SESSION['user'];
 $result = pg_query_params($db, 'SELECT * FROM useraccount WHERE email = $1', array($userMail));
 $row = pg_fetch_array($result);
 
@@ -19,7 +19,6 @@ if (isset($_POST['submit'])) {
     $newGender = $_POST['gender'];
     $newContact = $_POST['contact_number'];
     $newEmail = $_POST['email'];
-    $newPassword = $_POST['password'];
     $newVehiclePlate = $_POST['vehicle_plate'];
     $newCapacity = $_POST['capacity'];
     $isADriver = $_POST['isDriver'];
@@ -41,7 +40,6 @@ if (isset($_POST['submit'])) {
     $row[1] = $newGender;
     $row[2] = $newContact;
     $row[3] = $newEmail;
-    $row[4] = $newPassword;
     $row[5] = $newVehiclePlate;
     $row[6] = $newCapacity;
     $row[7] = $isADriver;
@@ -52,7 +50,7 @@ if (isset($_POST['submit'])) {
     if($isADriver == 'n' AND $existingOffers[0] == 't'){
         $offerError = 'You cannot declare yourself as a non-driver when you have existing offers! Please delete those offers first!';
     }else{
-        pg_query_params($db, 'UPDATE useraccount SET name = $2, gender = $3, contact_number = $4, email = $5,password = $6, vehicle_plate = $7, capacity = $8, is_driver = $9 WHERE email = $1', array($userMail, $newName, $newGender, $newContact, $newEmail, $newPassword, $newVehiclePlate, $newCapacity, $isADriver));
+        pg_query_params($db, 'UPDATE useraccount SET name = $2, gender = $3, contact_number = $4, email = $5, vehicle_plate = $6, capacity = $7, is_driver = $8 WHERE email = $1', array($userMail, $newName, $newGender, $newContact, $newEmail, $newVehiclePlate, $newCapacity, $isADriver));
 
         $error = pg_last_error($db);
         if (preg_match('/email/i', $error)) {
@@ -62,7 +60,7 @@ if (isset($_POST['submit'])) {
         } else if (preg_match('/driver_must_fill_in/i', $error)) {
             $driverError = 'This field must be filled in if you are a driver!';
         } else {
-            header("Location: adminUser.php");
+            header("Location: userPage.php");
         }
     }
 }
@@ -71,7 +69,7 @@ if (isset($_POST['submit'])) {
 
 <html>
     <body id = 'adminpage'>
-        <h2 class="text-center">Edit User</h2>
+        <h2 class="text-center">Edit your profile</h2>
         <div id="divForm">
             <form action="" method="post">
                 <div class='form-group'>
@@ -98,10 +96,6 @@ if($row[1] == "Male"){
                     <label for="inputEmail">Email: </label>
                     <?php echo "<input type='email' name='email' class='form-control' id='inputEmail' value='" . $row[3] . "' required>";?>
                     <span style='color:red'><?php echo $emailError;?></span>
-                </div>
-                <div class='form-group'>
-                    <label for="inputPassword">Password: </label>
-                    <?php echo "<input type='text' name='password' class='form-control' id='inputPassword' value='" . $row[4] . "' required>";?>
                 </div>
                 <div class='form-group'>
                     <label for="inputDriver">Is a driver? </label></br>
