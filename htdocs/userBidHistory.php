@@ -2,27 +2,19 @@
 include("header.php");
 include("userNavBar.php");
 
-//echo 'DB is connected';
 $historyResult = pg_query($db, "SELECT * FROM bidhistory
 	WHERE email = '" . $_SESSION['user'] . "';"); 
-
-echo "<script type='text/javascript' class='init'>
-		$(document).ready(function() {
-			$('#table').DataTable();
-		});
-	</script>";
 ?>
 
 <html>
-
-<h1><b>Your Past Bids:</b></h1>
-
-<table>
-
+	<body id="b2">
+	<h2 class="text-center"><b>Your Past Bids</b></h2>
+	<div id="divForm">
 <?php 
 	if (pg_num_rows($historyResult)>0){
 		$count = 1;
-		echo "<table id='table' class='table table-striped table-bordered' style='width:100%'>
+		echo "<div id='divTable'>
+		<table id='table' class='table table-striped table-bordered' style='width:100%'>
 			<thead>
 				<tr>
 					<th>S/N</th>
@@ -48,15 +40,13 @@ echo "<script type='text/javascript' class='init'>
 			$count++;
 		}
 		echo "</tbody>
-			</table>";
+			</table>
+		</div>";
 	}
 	else{
 		echo "<br>You do have any past bids!<br><br>";
 	}
 ?>
-
-<h2>Click <a href = "userBid.php">here</a> to go back to your Current Bids</h2></a>
-
-</body>
-
+	</div>
+	</body>
 </html>

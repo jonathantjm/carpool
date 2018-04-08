@@ -58,42 +58,51 @@ if (isset($_POST['submit'])) {
 ?>
 
 <html>
-	<h1>Details about the bid</h1>
-	<table>
-	<?php
-		$adv_row = pg_fetch_assoc($advertisement);
-		echo "<tr>" ;
-			echo "<td> Start Location: </td>";
-			echo "<td>" . $adv_row['start_location'] . "</td>";
-		echo "</tr>";
-		echo "<tr>" ;
-			echo "<td> End Location: </td>";
-			echo "<td>" . $adv_row['end_location'] . "</td>";
-		echo "</tr>";
-		echo "<tr>" ;
-			echo "<td> Pick Up Date: </td>";
-			echo "<td>" . $adv_row['date_of_pickup'] . "</td>";
-		echo "</tr>";
-		echo "<tr>" ;
-			echo "<td> Pick Up Time: </td>";
-			echo "<td>" . $adv_row['time_of_pickup'] . "</td>";
-		echo "</tr>";
-		echo "<tr>" ;
-			echo "<td> Driver Gender: </td>";
-			echo "<td>" . $adv_row['gender'] . "</td>";
-		echo "</tr>";
-		echo "<tr>" ;
-			echo "<td> Driver Capacity: </td>";
-			echo "<td>" . $adv_row['capacity'] . "</td>";
-		echo "</tr>";
-		echo "<tr>";
-			echo "<td> Your price: </td>";
-			echo "<td>" . $row['price'] . "</td>";
-		echo "</tr>";
-	?>
-	</table>
-	<form action="" method="post">
-		<strong>Price: *</strong> <input type="number" name="price" value = "<?php echo $row['price']?>" required/><br/>
-		<input type="submit" name="submit" value="Submit">
-	</form>
+	<body id="b7">
+		<h2 class="text-center">Details about the bid</h2>
+		<div id="divBox">
+			<table id='table' class='table table-striped table-bordered'>
+				<col width="150">
+				<col width="150">
+<?php
+	$adv_row = pg_fetch_assoc($advertisement);
+	echo "<tr>" ;
+		echo "<td> Start Location: </td>";
+		echo "<td>" . $adv_row['start_location'] . "</td>";
+	echo "</tr>";
+	echo "<tr>" ;
+		echo "<td> End Location: </td>";
+		echo "<td>" . $adv_row['end_location'] . "</td>";
+	echo "</tr>";
+	echo "<tr>" ;
+		echo "<td> Pick Up Date: </td>";
+		echo "<td>" . $adv_row['date_of_pickup'] . "</td>";
+	echo "</tr>";
+	echo "<tr>" ;
+		echo "<td> Pick Up Time: </td>";
+		echo "<td>" . $adv_row['time_of_pickup'] . "</td>";
+	echo "</tr>";
+	echo "<tr>" ;
+		echo "<td> Driver Gender: </td>";
+		echo "<td>" . $adv_row['gender'] . "</td>";
+	echo "</tr>";
+	echo "<tr>" ;
+		echo "<td> Driver Capacity: </td>";
+		echo "<td>" . $adv_row['capacity'] . "</td>";
+	echo "</tr>";
+	echo "<tr>";
+		echo "<td> Your price: </td>";
+		echo "<td>" . $row['price'] . "</td>";
+	echo "</tr>";
+?>
+			</table>
+		</div>
+		</br>
+		<div id="divBox">
+			<form action="" method="post">
+				<strong>Price: *</strong> <input type="number" name="price" value = "<?php echo $row['price']?>" required/><br/>
+				<button type="submit" name="submit" class="btn btn-primary">Submit</button>
+			</form>
+		</div>
+	</body>	
 </html>

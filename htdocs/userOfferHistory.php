@@ -2,22 +2,14 @@
 include("header.php");
 include("userNavBar.php");
 
-//echo 'DB is connected';
-
 $historyResult = pg_query($db, "SELECT * FROM advertisementshistory
 	WHERE email_of_driver = '" . $_SESSION['user'] . "';");
-
-echo "<script type='text/javascript' class='init'>
-		$(document).ready(function() {
-			$('#table').DataTable();
-		});
-	</script>";
 ?>
 
 <html>
-
-<h1><b>Your Past Offers:</b></h1>
-
+	<body id="b11">
+		<h2 class="text-center"><b>Your Past Offers</b></h2>
+		<div id="divTable">
 <?php 
 $counter = 1;
 if (pg_num_rows($historyResult) > 0) {
@@ -44,16 +36,10 @@ if (pg_num_rows($historyResult) > 0) {
 	}
 	echo "</tbody>
 	</table>";
+} else {
+	echo "<h5 class='text-center'>You do not have any past offers!</h5>";
 }
-else{
-	echo "<br>You do not have any past offers!<br><br>";
-}
-
-
 ?>
-
-<h2>Click <a href = "userOffer.php">here</a> to go back to your Current Offers</h2></a>
-
-</body>
-
+		</div>
+	</body>
 </html>

@@ -2,27 +2,32 @@
 include("header.php");
 include("userNavBar.php");
 
-//echo 'DB is connected';
 $result = pg_query($db, "SELECT * FROM advertisements 
 	WHERE email_of_driver = '" . $_SESSION['user'] . "';");
 
 $historyResult = pg_query($db, "SELECT * FROM advertisementshistory
 	WHERE email_of_driver = '" . $_SESSION['user'] . "';");
-
-echo "<script type='text/javascript' class='init'>
-		$(document).ready(function() {
-			$('#table').DataTable();
-		});
-	</script>";
-$counter = 1;
 ?>
 
 <html>
-
-<h1><b>Your Offers:</b></h1>
-
+	<body id="b9">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-2" style="padding:20px">
+					<a href="userOfferHistory.php" class='btn btn-primary' role='button'>Past offers</a>				
+				</div>
+				<div class="col-md-8">
+					<h2 class="text-center">Your current offers</h2>
+				</div>
+				<div class="col-md-1 col-md-offset-1" style="padding:20px">
+					<a href="userCreateOffer.php" class='btn btn-primary' role='button'>New offer</a>
+				</div>
+			</div>
+		</div>
+		</br>
+		<div id="divTable">
 <?php 
-
+$counter = 1;
 if (pg_num_rows($result) > 0) {
 	echo "<table id='table' class='table table-striped table-bordered' style='width:100%'>
 	<thead>
@@ -37,6 +42,7 @@ if (pg_num_rows($result) > 0) {
 			<th>Date and Time Created</th>
 			<th>Delete</th>
 			<th>Edit</th>
+			<th>Bids</th>
 		</tr>
 	</thead>
 	<tbody>";
@@ -49,38 +55,31 @@ if (pg_num_rows($result) > 0) {
 		echo "<td>" . $row[6] . "</td>";
 		if ($row[7] == 't'){
 			echo "<td>Yes</td>";
-		}
-		else{
+		} else {
 			echo "<td>No</td>";	
 		}
 		if ($row[8] == 't'){
 			echo "<td>Yes</td>";
-		}
-		else{
+		} else {
 			echo "<td>No</td>";	
 		}
 		echo "<td>" . $row[4] . "</td>";
 		echo "<td><a href='userDeleteOffer.php?id=".$row[0]."'>Delete</a></td>";
 		echo "<td><a href='userEditOffer.php?id=".$row[0]."'>Edit</a></td>";
+		if ($row[8] == 't') {
+			echo "<td><a href='userAcceptBid.php?id=".$row[0]."'>See all bids</a></td>";
+		} else {
+			echo "<td>Auto-accept on</td>";
+		}
 		echo "</tr>";
 		$counter++;
 	}
 	echo "</tbody>
 	</table>";
+} else {
+	echo "<h5 class='text-center'>You do not have any active offers!</h5>";
 }
-else{
-	echo "<br>You do not have any active offers!<br><br>";
-}
-
-
 ?>
-
-<h2>Add a new offer</h2>
-
-<p><a href="userCreateOffer.php">New offer</a></p>
-
-<h2>Click <a href = "userOfferHistory.php">here</a> to see your Past Offers</h2>
-
-</body>
-
+		</div>
+	</body>
 </html>

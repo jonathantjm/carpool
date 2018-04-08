@@ -1,6 +1,3 @@
-
-
-
 .btn-xl {
     height: 50px;
     padding: 10px 20px;
@@ -10,191 +7,217 @@
 }
 
 #indexpage {
-	background-image: url(images/taxi2.jpg);
+	background: url(images/taxi2.jpg) no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
 	background-size: cover;
-	background-repeat: no-repeat;
-	position: center;
+	overflow-x: hidden;	
 }
 
 #loginpage {
-    background-image: url(images/taxi.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/taxi.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 
 #b1 {
-    background-image: url(images/b1.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b1.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 
 #b2 {
-    background-image: url(images/b2.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b2.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b3 {
-    background-image: url(images/b3.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b3.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b4 {
-    background-image: url(images/b4.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b4.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b5 {
-    background-image: url(images/b5.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b5.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b6 {
-    background-image: url(images/b6.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b6.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b7 {
-    background-image: url(images/b7.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b7.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b8 {
-    background-image: url(images/b8.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b8.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b9 {
-    background-image: url(images/b9.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b9.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b10 {
-    background-image: url(images/b10.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b10.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b11 {
-    background-image: url(images/b11.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b11.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b12 {
-    background-image: url(images/b12.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b12.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 
 #b13 {
-    background-image: url(images/b13.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b13.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 
 #b14 {
-    background-image: url(images/b14.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b14.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b15 {
-    background-image: url(images/b15.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b15.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b16 {
-    background-image: url(images/b16.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b16.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 #b17 {
-    background-image: url(images/b17.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b17.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 
 #b18 {
-    background-image: url(images/b18.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b18.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 
 #b19 {
-    background-image: url(images/b19.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b19.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 
 #b20 {
-    background-image: url(images/b20.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b20.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 
 
 #b21 {
-    background-image: url(images/b21.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b21.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 
 
 #b22 {
-    background-image: url(images/b22.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b22.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 
 #b23 {
-    background-image: url(images/b22.jpg);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    position: center;
-
+    background: url(images/b23.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	overflow-x: hidden;
 }
 
 #adminpage { 
@@ -203,6 +226,7 @@
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
+	overflow-x: hidden;
 }
 
 #divTable {
@@ -223,16 +247,20 @@
 	width: 60%;
 }
 
+#divBox {
+	border-radius: 25px;
+	padding: 10px;
+	background-color: white;
+	opacity: 0.9;
+	margin: 0 auto;
+	width: 30%;
+}
 .back-to-top {
     cursor: pointer;
     position: fixed;
     bottom: 20px;
     right: 20px;
     display:none;
-}
-
-label {
-	color: blue;
 }
 
 .wrapper {

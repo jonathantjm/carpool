@@ -31,17 +31,13 @@ if (isset($_POST['submit'])) {
 		header("Location: userBid.php");
     }
 }
-
-echo "<script type='text/javascript' class='init'>
-		$(document).ready(function() {
-			$('#table').DataTable();
-		});
-	</script>";
 ?>
 
 <html>
-	<h1 class="text-center">Bid and Driver details</h1>
-	<table id="table" class="table table-striped table-bordered" style="width:100%">
+	<body id="b4">
+	<h2 class="text-center">Bid and Driver details</h2>
+	<div id="divTable">
+		<table id="table" class="table table-striped table-bordered" style="width:100%">
 <?php 
 echo "<thead>
 	<tr>
@@ -64,13 +60,18 @@ echo "<tbody>";
 	echo "</tr>
 	</tbody>";
 ?>
-	</table>
-	<form action="" method="post">
-		<div class="form-group">
-			<label for="inputPrice">Enter bidding price</label>
-			<input type="text" pattern="(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{1,2}))?)" name="price" class="form-control" id="inputPrice" placeholder="<?php echo $price; ?>" required>
-			<span style="color:red"><?php echo $msg; ?></span>
-		</div>
-		<button type="submit" name="submit" class="btn btn-primary">Bid</button>
-	</form>
+		</table>
+	</div>
+	</br>
+	<div id="divForm">
+		<form action="" method="post">
+			<div class="form-group">
+				<label for="inputPrice">Enter bidding price</label>
+				<input type="text" pattern="(0\.((0[1-9]{1})|([1-9]{1}([0-9]{1})?)))|(([1-9]+[0-9]*)(\.([0-9]{1,2}))?)" name="price" class="form-control" id="inputPrice" placeholder="<?php echo $price; ?>" required>
+				<span style="color:red"><?php echo $msg; ?></span>
+			</div>
+			<button type="submit" name="submit" class="btn btn-primary">Bid</button>
+		</form>
+	</div>
+	</body>
 </html>

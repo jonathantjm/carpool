@@ -31,17 +31,6 @@ if (isset($_POST['submitForm'])){
 ?>
 
 <html>
-	<head>
-		<style>
-			html, body {
-				width: 100%;
-				height: 100%;
-				margin: 0;
-				padding: 0;
-				overflow-x: hidden;
-			}	
-		</style>
-	</head>
 	<body id="loginpage">
 		<div class ="wrapper">
 			<div class="col-lg-12" style="height:150px;"></div>

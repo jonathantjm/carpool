@@ -3,10 +3,6 @@ include("header.php");
 include("userNavBar.php");
 
 $locations = pg_query($db, "SELECT * FROM locations"); 
-
-//echo $_GET['id'];
-//echo $_GET['mail'];
-
 $advertisementID = $_GET['id'];
 $email = $_SESSION['user'];
 $creator = pg_query($db, "SELECT email_of_driver FROM advertisements WHERE advertisementid = '" . $advertisementID . "';");
@@ -71,71 +67,61 @@ if (isset($_POST['submit'])) {
 	else {
 		echo $error;
 	}
-
 }
-
 ?>
 
 <html>
+	<body id="b8">
+	<h2 class="text-center">Edit offer</h2>
+	<div id="divForm">
+		<form action="" method="post">
+<?php
+$locations_array = array();
+while($row = pg_fetch_array( $locations )) {
+	$locations_array[] = $row[0];
+}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-
-<h2>New:</h2>
-<form action="" method="post">
-
-	<?php
-	$locations_array = array();
-	while($row = pg_fetch_array( $locations )) {
-		$locations_array[] = $row[0];
+echo "<div class = \"form-group\">";
+echo "<lael for =\"input_start_location\">Start Location: *</label>";
+echo "<select class = \"form-control\" id = \"input_start_location\" name= \"start_location\" required/>";
+foreach ($locations_array as $location){
+	if ($start_location == $location){
+		echo "<option value ='".$location."' selected>".$location."</option>";
 	}
-
-	echo "<div class = \"form-group\">";
-	echo "<lael for =\"input_start_location\">Start Location: *</label>";
-	echo "<select class = \"form-control\" id = \"input_start_location\" name= \"start_location\" required/>";
-	foreach ($locations_array as $location){
-		if ($start_location == $location){
-			echo "<option value ='".$location."' selected>".$location."</option>";
-		}
-		else{
-			echo "<option value ='".$location."' >".$location."</option>";
-		}
+	else{
+		echo "<option value ='".$location."' >".$location."</option>";
 	}
-	echo "</select><br/>";
-	echo "</div>";
+}
+echo "</select><br/>";
+echo "</div>";
 
-	echo "<div class = \"form-group\">";
-	echo "<lael for =\"input_end_location\">End Location: *</label>";
-	echo "<select class = \"form-control\" id = \"input_end_location\" name= \"end_location\" required/>";
-	foreach ($locations_array as $location){
-		if ($end_location == $location){
-			echo "<option value ='".$location."' selected>".$location."</option>";
-		}
-		else{
-			echo "<option value ='".$location."' >".$location."</option>";
-		}
+echo "<div class = \"form-group\">";
+echo "<lael for =\"input_end_location\">End Location: *</label>";
+echo "<select class = \"form-control\" id = \"input_end_location\" name= \"end_location\" required/>";
+foreach ($locations_array as $location){
+	if ($end_location == $location){
+		echo "<option value ='".$location."' selected>".$location."</option>";
 	}
-	echo "</select><br/>";
-	echo "<span style=\"color:red\">" . $locationError . "</span>";
-	echo "</div>";
-	?>
-
-	<div class = "form-group">
-	<label for = "date_input">Date Of Pickup: *</label>
-	<input type="date" class = "form-control" id = "date_input" name="date_of_pickup" value = <?php echo $date_of_pickup?> required/><br/>
-	<span style="color:red"><?php echo $dateError;?></span>
-	</div>
-
-	<div class = "form-group">
-	<label for = "time_input">Time Of Pickup: *</label>
-	<input type="time" class = "form-control" id = "time_input" name="time_of_pickup" step = "900" value = <?php echo $time_of_pickup?> required/><br/>
-	<span style="color:red"><?php echo $timeError;?></span>
-	</div>
-
-<strong> Would you like to select your own riders?: </strong> 
-<input type = "hidden" value = "f" name = "self_select">
+	else{
+		echo "<option value ='".$location."' >".$location."</option>";
+	}
+}
+echo "</select><br/>";
+echo "<span style=\"color:red\">" . $locationError . "</span>";
+echo "</div>";
+?>
+		<div class = "form-group">
+			<label for = "date_input">Date Of Pickup: *</label>
+			<input type="date" class = "form-control" id = "date_input" name="date_of_pickup" value = <?php echo $date_of_pickup?> required/><br/>
+			<span style="color:red"><?php echo $dateError;?></span>
+		</div>
+		<div class = "form-group">
+			<label for = "time_input">Time Of Pickup: *</label>
+			<input type="time" class = "form-control" id = "time_input" name="time_of_pickup" step = "900" value = <?php echo $time_of_pickup?> required/><br/>
+			<span style="color:red"><?php echo $timeError;?></span>
+		</div>
+		<strong> Would you like to select your own riders?: </strong> 
+		<input type = "hidden" value = "f" name = "self_select">
 <?php 
 if ($self_select == t){
 	echo "<input type = \"checkbox\" name = \"self_select\" value = \"t\" checked><br/>";
@@ -144,11 +130,8 @@ else{
 	echo "<input type = \"checkbox\" name = \"self_select\" value = \"t\"><br/>";
 }
 ?>
-
-<p>* required</p>
-
-<input type="submit" name="submit" value="Submit">
-
-</form>
-
+		<p>* required</p>
+		<button type="submit" name="submit" class="btn btn-primary">Submit</button>
+	</div>
+	</body>
 </html>
