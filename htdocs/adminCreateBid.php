@@ -29,7 +29,7 @@ if (isset($_POST['submit'])) {
         $adIdError = $error;
     } elseif ($error === 'Price should be numeric and greater than 0!') {
         $priceError = $error;
-    } elseif ($error == '') {
+    } elseif ($error === '') {
 		header("Location: adminBid.php");
     }
 }
