@@ -31,20 +31,22 @@ if(isset($_POST['yes'])){
 elseif(isset($_POST['no'])){
 	header("Location: userOffer.php");
 }
-
-echo pg_last_error($db);
-
 ?>
 
 <html>
-
-<body>
-	<div>
-		<h2>Are you sure you want to delete?</h2>
-		<form action="" method="post">
-			<input type="submit" name = "yes" value = "Yes">
-			<input type="submit" name = "no" value = "No">
-	</div>
-</body>
-
+	<body id="b10">
+		<div class="col-lg-12" style="height:50px;"></div>
+		<h2 class="text-center">Are you sure you want to delete?</h2>
+		<div class="col-lg-12" style="height:25px;"></div>
+		<div class="row">
+			<form action="" method="post">
+				<div class="col-md-offset-5 col-md-1">
+					<button type="submit" name="yes" class="btn btn-primary">Yes</button>
+				</div>
+				<div class="col-md-6 col-md-1">
+						<button type="submit" name="no" class="btn btn-primary">No</button>
+				</div>
+			</form>
+		</div>
+	</body>
 </html>

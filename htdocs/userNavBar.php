@@ -7,8 +7,36 @@ if ($isAdmin == null) {
 		window.location.href='login.php';
 	</script>";
 }
+
+echo "<script type='text/javascript' class='init'>
+		$(document).ready(function() {
+			$('#table').DataTable();
+		});
+	</script>";
+	
+echo "<script type='text/javascript'>
+	$(document).ready(function(){
+		$(window).scroll(function () {
+            if ($(this).scrollTop() > 50) {
+                $('#back-to-top').fadeIn();
+            } else {
+                $('#back-to-top').fadeOut();
+            }
+        });
+        // scroll body to 0px on click
+        $('#back-to-top').click(function () {
+            $('#back-to-top').tooltip('hide');
+            $('body,html').animate({
+                scrollTop: 0
+            }, 800);
+            return false;
+        });
+        
+        $('#back-to-top').tooltip('show');
+	});
+	</script>";
 ?>
-<!DOCTYPE html>
+
 <html>
 	<body>
 		<nav class="navbar navbar-inverse">
@@ -23,7 +51,7 @@ if ($isAdmin == null) {
 							<span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li><a href="userBid.php">View bids</a></li>
-								<li><a href="userCreateBid.php">Create bid</a></li>
+								<li><a href="userBidHistory.php">Past bids</a></li>
 							</ul>
 						</li>
 						<li class ="dropdown">
@@ -32,6 +60,7 @@ if ($isAdmin == null) {
 							<ul class="dropdown-menu">
 								<li><a href="userOffer.php">View offers</a></li>
 								<li><a href="userCreateOffer.php">Create offer</a></li>
+								<li><a href="userOfferHistory.php">Past offers</a></li>
 							</ul>
 						</li>
 					</ul>
