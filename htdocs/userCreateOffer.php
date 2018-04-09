@@ -42,7 +42,7 @@ if (isset($_POST['submit'])) {
 
     $error =  $result[0];
     if ($error == ''){
-        header("Location: adminOffer.php");	
+        header("Location: userOffer.php");	
     }
     else if(strpos($error, 'location') !== false){		
         $locationError = $error;
