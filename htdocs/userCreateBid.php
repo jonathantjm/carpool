@@ -5,7 +5,7 @@ include("userNavBar.php");
 $email = $_SESSION['user'];
 $advertisementID = $_GET['id'];
 
-$advertisement = pg_query_params($db, "SELECT * FROM advertisements ad, useraccount acc WHERE acc.email = $1 AND ad.advertisementid = $2", array($email, $advertisementID)); 
+$advertisement = pg_query_params($db, "SELECT * FROM advertisements ad, useraccount acc WHERE acc.email = ad.email_of_driver AND ad.advertisementid = $1", array($advertisementID)); 
 
 $row = pg_fetch_assoc($advertisement);
 $msg;

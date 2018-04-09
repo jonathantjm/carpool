@@ -15,7 +15,7 @@ $driver = pg_query_params($db, "SELECT is_driver FROM useraccount
 	window.location = "userOffer.php";
   }
   function accept_Display() {
-	window.location = "accept.php";
+	window.location = "userAcceptBid.php";
   }
 </script>
 
@@ -38,37 +38,33 @@ $driver = pg_query_params($db, "SELECT is_driver FROM useraccount
 			<div id="divTable">
 				<table id="table" class="table table-striped table-bordered" style="width:100%">
 					<?php 
-					$result = pg_query_params($db, 'SELECT * FROM advertisements WHERE email_of_driver <> $1 ORDER BY date_of_pickup, time_of_pickup', array($email)); 
+					$result = pg_query_params($db, 'SELECT * FROM advertisements WHERE email_of_driver <> $1 AND closed = false ORDER BY date_of_pickup, time_of_pickup', array($email)); 
 					$counter = 1;
 					echo "<thead>
 						<tr>
 							<th>S/N</th>
-							<th>Email</th>
-							<th>Advertisement ID</th>
-							<th>Date and time created</th>
-							<th>Starting location</th>
-							<th>Ending location</th>
-							<th>Time of pick-up</th>
-							<th>Date of pick-up</th>
-							<th>Offer status</th>
+							<th>Start location</th>
+							<th>End location</th>
+							<th>Pick-up date</th>
+							<th>Pick-up time</th>
 							<th>Driver self-select</th>
 							<th>Place bid</th>
 						</tr>
 						</thead>";
 					echo "<tbody>";
-					while($row = pg_fetch_array( $result )) { 
+					while($row = pg_fetch_assoc( $result )) { 
 						echo "<tr>";
 						echo "<td>" . $counter . "</td>";
-						echo "<td>" . $row[1] . "</td>";
-						echo "<td>" . $row[0] . "</td>";
-						echo "<td>" . $row[4] . "</td>";
-						echo "<td>" . $row[2] . "</td>";
-						echo "<td>" . $row[3] . "</td>";
-						echo "<td>" . $row[6] . "</td>";
-						echo "<td>" . $row[5] . "</td>";
-						echo "<td>" . $row[7] . "</td>";
-						echo "<td>" . $row[8] . "</td>";
-						echo "<td class='table-fit'><a href='userCreateBid.php?id=", urlencode($row[0]), "'class='btn btn-primary' role='button'>Place Bid</a></td>";
+						echo "<td>" . $row['start_location'] . "</td>";
+						echo "<td>" . $row['end_location'] . "</td>";
+						echo "<td>" . $row['date_of_pickup'] . "</td>";
+						echo "<td>" . $row['time_of_pickup'] . "</td>";
+						if ($row['self_select'] == 'f'){
+							echo "<td> No </td>";	
+						}else{
+							echo "<td> Yes </td>";	
+						}
+						echo "<td class='table-fit'><a href='userCreateBid.php?id=", urlencode($row['advertisementid']), "'class='btn btn-primary' role='button'>Place Bid</a></td>";
 						echo "</tr>";
 						$counter++;
 					}

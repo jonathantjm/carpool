@@ -4,16 +4,16 @@ include("userNavBar.php");
 
 $advertisementID = $_GET['id'];
 $email = $_SESSION['user'];
-$creator = pg_query($db, "SELECT email FROM bid WHERE advertisementid = '" . $advertisementID . "';");
+$creator = pg_query($db, "SELECT email FROM bid WHERE advertisementid = '" . $advertisementID . "' AND email = '".$email. "';");
 
 if(is_null($advertisementID)){
-	$message = "Oops something went wrong!";
+	$message = "Bid not found!";
 	echo "<script type='text/javascript'>alert('$message');
 		window.location.href='userPage.php';
 	</script>";
 }
-if(pg_num_rows($creator == 0)){
-	$message = "Advertisement not found!";
+/*if(pg_num_rows($creator == 0)){
+	$message = "Bid not found!";
 	echo "<script type='text/javascript'>alert('$message');
 		window.location.href='userPage.php';
 	</script>";	
@@ -23,7 +23,7 @@ if(pg_fetch_array($creator)[0] != $email){
 	echo "<script type='text/javascript'>alert('$message');
 		window.location.href='userPage.php';
 	</script>";
-}
+}*/
 
 $currentBid = pg_query_params($db, "SELECT * FROM bid 
 	WHERE email = $1 AND advertisementid = $2", array($email, $advertisementID));
