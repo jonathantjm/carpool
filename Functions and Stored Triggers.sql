@@ -187,16 +187,16 @@ ON advertisements
 FOR EACH ROW
     EXECUTE PROCEDURE expireBidIfAdClosed();
 
-    --update bid status - trigger
-    CREATE TRIGGER updateBidsAndOffer 
-    AFTER UPDATE
-    ON bid
-    FOR EACH ROW
-        EXECUTE PROCEDURE updateBidsAndOfferStatus();
+--update bid status - trigger
+CREATE TRIGGER updateBidsAndOffer 
+AFTER UPDATE
+ON bid
+FOR EACH ROW
+    EXECUTE PROCEDURE updateBidsAndOfferStatus();
 
 
-        CREATE OR REPLACE FUNCTION updateAdvertisement()
-        RETURNS varchar AS $$
+CREATE OR REPLACE FUNCTION updateAdvertisement()
+RETURNS varchar AS $$
         DECLARE
         currentTimeAndDate timestamp := current_timestamp;
         r1 advertisements%ROWTYPE;
