@@ -1,79 +1,91 @@
--- add a user
+-- Add a user
 CREATE OR REPLACE FUNCTION add_user(_name varchar, _gender varchar, _contact varchar, _email varchar, _password varchar, 
     _platenumber varchar, _capacity integer, _isDriver boolean, _isAdmin boolean)
 returns varchar as
 $BODY$
 BEGIN
-    IF EXISTS (SELECT email FROM useraccount WHERE email = _email) THEN return 'Email already exists!';
-END IF;
-IF EXISTS (SELECT vehicle_plate FROM useraccount WHERE vehicle_plate = _platenumber) THEN return 'Plate number already exists!';
-END IF;
-INSERT INTO useraccount VALUES (_name, _gender, _contact, _email, _password, _platenumber, _capacity, _isDriver, _isAdmin);
-return 'Account has been successfully created!';
+    IF EXISTS (SELECT email FROM useraccount WHERE email = _email) THEN RETURN 'Email already exists!';
+    END IF;
+
+    IF EXISTS (SELECT vehicle_plate FROM useraccount WHERE vehicle_plate = _platenumber) THEN RETURN 'Plate number already exists!';
+    END IF;
+
+    INSERT INTO useraccount VALUES (_name, _gender, _contact, _email, _password, _platenumber, _capacity, _isDriver, _isAdmin);
+
+    RETURN 'Account has been successfully created!';
 END;
 $BODY$
 language 'plpgsql' volatile;
 
---Check if the user has any existing offers
+-- Check if the user has any existing offers
 CREATE OR REPLACE FUNCTION checkExistingOffer(_currentEmail varchar) RETURNS boolean AS $$
 DECLARE
 BEGIN
-    IF EXISTS (SELECT * FROM advertisements WHERE email_of_driver = _currentEmail) 
-        THEN RETURN TRUE;
+    IF EXISTS (SELECT * FROM advertisements WHERE email_of_driver = _currentEmail) THEN RETURN TRUE;
     END IF;
+
     RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
 
--- add an advertisement
+-- Add an advertisement
 CREATE OR REPLACE FUNCTION add_advertisement(_email varchar, _startLocation varchar, _endLocation varchar, _pickupDate date, _pickupTime time, _selfSelect boolean)
 returns varchar as
 $BODY$
 BEGIN
-    IF NOT EXISTS (SELECT email FROM useraccount WHERE email = _email) THEN return 'Account for this email does not exist!';
-    ELSEIF (_startLocation = _endLocation) THEN return 'Cannot have the same start and end location!';
-    ELSEIF ((_pickupDate + _pickupTime) <= (current_timestamp + INTERVAL '1 hour')) THEN RETURN 'Pick-up date and time must be at least 1 hour from now!';
-END IF;
-INSERT INTO advertisements(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select) VALUES (_email,_startLocation, _endLocation, current_timestamp, _pickupDate, _pickupTime, _selfSelect);
-return '';
+
+    IF NOT EXISTS (SELECT email FROM useraccount WHERE email = _email) THEN RETURN 'Account for this email does not exist!';
+    ELSEIF (_startLocation = _endLocation) THEN RETURN 'Cannot have the same start and end location!';
+    ELSEIF ((_pickupDate + _pickupTime) <= (current_timestamp + INTERVAL '1 hour')) THEN RETURN 'Pick-up date and time must be at least 1     hour from now!';
+    END IF;
+
+    INSERT INTO advertisements(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select) VALUES (_email,_startLocation, _endLocation, current_timestamp, _pickupDate, _pickupTime, _selfSelect);
+
+RETURN '';
 END;
 $BODY$
 language 'plpgsql' volatile;
 
--- delete advertisement and place deleted advertisement into advertisementsHistory
+-- Delete advertisement and place deleted advertisement into advertisementsHistory
 CREATE OR REPLACE FUNCTION delete_advertisement(_advertisementID bigint)
 returns varchar as
 $BODY$
 BEGIN
-    IF EXISTS (SELECT * FROM advertisements WHERE advertisementID = _advertisementID) THEN
-        UPDATE advertisements SET closed = true WHERE advertisementID = _advertisementID;
-        INSERT INTO advertisementsHistory(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select)
+    IF EXISTS (SELECT * FROM advertisements WHERE advertisementID = _advertisementID) 
+    THEN UPDATE advertisements SET closed = true WHERE advertisementID = _advertisementID;
+
+    INSERT INTO advertisementsHistory(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select)
         SELECT email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select FROM advertisements WHERE advertisementID = _advertisementID;
-        DELETE FROM advertisements WHERE advertisementID = _advertisementID;
-        return _advertisementID|| 'Plate number already exists!';
+
+    DELETE FROM advertisements WHERE advertisementID = _advertisementID;
+
+    RETURN _advertisementID|| 'Plate number already exists!';
 END IF;
 END;
 $BODY$
 language 'plpgsql' volatile;
 
--- update bids and offer status - stored procedure -- trigger AFTER UPDATE on bid
+-- Update bids and offer status - stored procedure -- trigger AFTER UPDATE on bid
 CREATE OR REPLACE FUNCTION updateBidsAndOfferStatus()
 RETURNS TRIGGER AS $bid_table$
 BEGIN
     IF NEW.status = 'Accepted' THEN
+
         -- this part settles the bids
         UPDATE bid SET status = 'Rejected' WHERE status = 'Pending' AND advertisementID = NEW.advertisementID;
         INSERT INTO bidHistory(email, status, price, creation_date_and_time, start_location, end_location, date_of_pickup, time_of_pickup)
-        SELECT B1.email, B1.status, B1.price, B1.creation_date_and_time, A1.start_location, A1.end_location, A1.date_of_pickup, A1.time_of_pickup FROM bid B1, advertisements A1 WHERE B1.advertisementID = A1.advertisementID AND A1.advertisementID = NEW.advertisementID;
+            SELECT B1.email, B1.status, B1.price, B1.creation_date_and_time, A1.start_location, A1.end_location, A1.date_of_pickup, A1.time_of_pickup FROM bid B1, advertisements A1 WHERE B1.advertisementID = A1.advertisementID AND A1.advertisementID = NEW.advertisementID;
         DELETE FROM bid WHERE advertisementID = NEW.advertisementID;
+
         -- this part settles the advertisements
         UPDATE advertisements SET closed = true WHERE advertisementID = NEW.advertisementID;
         INSERT INTO advertisementsHistory(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select) 
-        SELECT email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select FROM advertisements WHERE advertisementID = NEW.advertisementID;
+            SELECT email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select FROM advertisements WHERE advertisementID = NEW.advertisementID;
         DELETE FROM advertisements WHERE advertisementID = NEW.advertisementID;
+
     ELSEIF NEW.status = 'Rejected' OR NEW.status = 'Offer retracted' OR NEW.status = 'Offer expired' THEN
         INSERT INTO bidHistory(email, status, price, creation_date_and_time, start_location, end_location, date_of_pickup, time_of_pickup)
-        SELECT B1.email, B1.status, B1.price, B1.creation_date_and_time, A1.start_location, A1.end_location, A1.date_of_pickup, A1.time_of_pickup FROM bid B1, advertisements A1 WHERE B1.advertisementID = A1.advertisementID AND A1.advertisementID = NEW.advertisementID;
+            SELECT B1.email, B1.status, B1.price, B1.creation_date_and_time, A1.start_location, A1.end_location, A1.date_of_pickup, A1.time_of_pickup FROM bid B1, advertisements A1 WHERE B1.advertisementID = A1.advertisementID AND A1.advertisementID = NEW.advertisementID;
         DELETE FROM bid WHERE advertisementID = NEW.advertisementID AND email = NEW.email;
    END IF;
 RETURN NULL;
