@@ -2,7 +2,7 @@
 include("header.php");
 include("adminNavBar.php");
 
-$result = pg_query($db, 'SELECT DISTINCT * FROM advertisemnetHistory ORDER BY email, creation_date_and_time DESC');
+$result = pg_query($db, 'SELECT DISTINCT * FROM advertisementsHistory ORDER BY email_of_driver, creation_date_and_time DESC');
 ?>
 
 <html>
