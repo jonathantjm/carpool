@@ -1,24 +1,13 @@
 <?php  
 include("header.php");
 include("userNavBar.php");
-
 $advertisementID = $_GET['id'];
 $result = pg_query_params($db, "SELECT * FROM bid WHERE advertisementid = $1 ORDER BY price DESC", array($advertisementID));
-if (isset($_POST['submit'])) {
-	
-	$email = $_POST['email'];
-	
-	$query = pg_query_params($db, "UPDATE bid SET status = 'Accepted' WHERE email = $1 AND advertisementid = $2", array($email, $advertisementID));
-	$error = pg_fetch_array($query)[0];
 
-	if ($error === ''){
-		header("Location: userOffer.php");	
-	} else {
-		$message = "Error encountered, please try again!";
-		echo "<script type='text/javascript'>alert('$message');
-			window.location.href='userOffer.php';
-		</script>";
-	}
+if (isset($_POST['submit'])) {	
+	$email = $_POST['email'];	
+	$query = pg_query_params($db, "UPDATE bid SET status = 'Accepted' WHERE email = $1 AND advertisementid = $2", array($email, $advertisementID));	
+	header("Location: userOffer.php");	
 }
 ?>
 
@@ -30,6 +19,9 @@ if (isset($_POST['submit'])) {
 				<thead>
 					<tr>
 						<th>S/N</th>
+						<th>Name</th>
+						<th>Gender</th>
+						<th>Contact number</th>
 						<th>Price</th>
 						<th>Accept</th>
 					</tr>
@@ -37,9 +29,14 @@ if (isset($_POST['submit'])) {
 				<tbody>
 <?php	
 $counter = 1;	
-while($row = pg_fetch_array( $result )) { 
+while($row = pg_fetch_array( $result )) {
+	$info = pg_query_params($db, "SELECT * FROM useraccount WHERE email = $1", array($row[0]));
+	$bidderInfo = pg_fetch_array($info);
 	echo "<tr>";
 	echo "<td>" . $counter . "</td>";
+	echo "<td>" . $bidderInfo[0] . "</td>";
+	echo "<td>" . $bidderInfo[1] . "</td>";
+	echo "<td>" . $bidderInfo[2] . "</td>";
 	echo "<td>" . $row[3] . "</td>";
 	echo "<td><form action='' method='post'>
 		<input type='hidden' name='email' value='" . $row[0] . "'/>

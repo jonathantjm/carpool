@@ -71,7 +71,7 @@ BEGIN
         INSERT INTO advertisementsHistory(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select) 
         SELECT email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select FROM advertisements WHERE advertisementID = NEW.advertisementID;
         DELETE FROM advertisements WHERE advertisementID = NEW.advertisementID;
-    ELSEIF NEW.status = 'Rejected' OR NEW.status = 'Offer retracted' OR NEW.status = 'Offer expired' THEN
+    ELSEIF NEW.status = 'Rejected' OR NEW.status = 'Offer retracted' THEN
         INSERT INTO bidHistory(email, status, price, creation_date_and_time, start_location, end_location, date_of_pickup, time_of_pickup)
         SELECT B1.email, B1.status, B1.price, B1.creation_date_and_time, A1.start_location, A1.end_location, A1.date_of_pickup, A1.time_of_pickup FROM bid B1, advertisements A1 WHERE B1.advertisementID = A1.advertisementID AND A1.advertisementID = NEW.advertisementID;
         DELETE FROM bid WHERE advertisementID = NEW.advertisementID AND email = NEW.email;
@@ -118,7 +118,7 @@ DECLARE
 error0 varchar := 'You cannot bid for your own offer!';
 error1 varchar := 'Your email is invalid!';
 error2 varchar := 'Advertisement id does not exist!';
-error3 varchar := 'Status is case-sensitive and should be Pending, Rejected, Accepted,  Offer retracted or Offer expired';
+error3 varchar := 'Status is case-sensitive and should be Pending, Rejected, Accepted or Offer retracted';
 error4 varchar := 'Price should be numeric and greater than 0!';
 error5 varchar := 'Sorry, advertisement has already been closed!';
 error6 varchar := 'Please make sure you have an existing bid for that offer!';
@@ -130,7 +130,7 @@ BEGIN
         THEN message := error1;
     ELSEIF NOT EXISTS (SELECT advertisementid FROM advertisements WHERE advertisementid = _advertisementID)
         THEN message := error2;
-    ELSEIF (_status <> 'Pending' AND _status <> 'Rejected' AND _status <> 'Accepted' AND _status <> 'Offer expired' AND _status <> 'Offer retracted')
+    ELSEIF (_status <> 'Pending' AND _status <> 'Rejected' AND _status <> 'Accepted' AND _status <> 'Offer retracted')
         THEN message := error3;
     ELSEIF (_price <= 0)
         THEN message := error4;
@@ -145,18 +145,12 @@ RETURN message;
 END;
 $$ LANGUAGE plpgsql;
 
---Procedure to retract/reject bid after ad has been closed
---Bid set to Retracted if current date is BEFORE the date of pickup
---Bid set to Expired if current date is AFTER the date of pickup
+--Procedure to retract bid after ad has been closed
 CREATE OR REPLACE FUNCTION expireBidIfAdClosed() RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.closed IS TRUE THEN
-        IF NEW.date_of_pickup > current_date THEN
-            UPDATE bid SET status = 'Offer retracted' WHERE advertisementID = NEW.advertisementID;
-        ELSE
-            UPDATE bid SET status = 'Offer expired' WHERE advertisementID = NEW.advertisementID;
-END IF;
-END IF;
+		UPDATE bid SET status = 'Offer retracted' WHERE advertisementID = NEW.advertisementID;
+	END IF;
 RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -173,38 +167,38 @@ CREATE TRIGGER deleteBidAfterAdvertisement
 AFTER UPDATE
 ON advertisements
 FOR EACH ROW
-    EXECUTE PROCEDURE expireBidIfAdClosed();
+EXECUTE PROCEDURE expireBidIfAdClosed();
 
-    --update bid status - trigger
-    CREATE TRIGGER updateBidsAndOffer 
-    AFTER UPDATE
-    ON bid
-    FOR EACH ROW
-        EXECUTE PROCEDURE updateBidsAndOfferStatus();
+--update bid status - trigger
+CREATE TRIGGER updateBidsAndOffer 
+AFTER UPDATE
+ON bid
+FOR EACH ROW
+EXECUTE PROCEDURE updateBidsAndOfferStatus();
 
 
-        CREATE OR REPLACE FUNCTION updateAdvertisement()
-        RETURNS varchar AS $$
-        DECLARE
-        currentTimeAndDate timestamp := current_timestamp;
-        r1 advertisements%ROWTYPE;
-        r2 bid%ROWTYPE;
-        r3 advertisements%ROWTYPE;
-        BEGIN
-            FOR r1 IN
-                SELECT * FROM advertisements
-                WHERE (date_of_pickup + time_of_pickup) <= (current_timestamp + INTERVAL '1 hour')
-                AND self_select = FALSE
-                LOOP
-                    FOR r2 IN
-                        SELECT * FROM bid
-                        WHERE bid.advertisementID = r1.advertisementID
-                        ORDER BY price DESC, creation_date_and_time
-                        LOOP
-                            UPDATE bid SET status = 'Accepted' WHERE bid.advertisementID = r2.advertisementID AND bid.email = r2.email;
-    END LOOP;
-END LOOP;
-FOR r3 IN
+CREATE OR REPLACE FUNCTION updateAdvertisement()
+RETURNS varchar AS $$
+DECLARE
+currentTimeAndDate timestamp := current_timestamp;
+r1 advertisements%ROWTYPE;
+r2 bid%ROWTYPE;
+r3 advertisements%ROWTYPE;
+BEGIN
+	FOR r1 IN
+	SELECT * FROM advertisements
+	WHERE (date_of_pickup + time_of_pickup) <= (current_timestamp + INTERVAL '1 hour')
+	AND self_select = FALSE
+	LOOP
+		FOR r2 IN
+		SELECT * FROM bid
+		WHERE bid.advertisementID = r1.advertisementID
+		ORDER BY price DESC, creation_date_and_time
+		LOOP
+			UPDATE bid SET status = 'Accepted' WHERE bid.advertisementID = r2.advertisementID AND bid.email = r2.email;
+		END LOOP;
+	END LOOP;
+	FOR r3 IN
     SELECT *
     FROM advertisements
     WHERE (date_of_pickup + time_of_pickup) <= (current_timestamp + INTERVAL '30 minutes')
@@ -213,7 +207,7 @@ FOR r3 IN
         INSERT INTO advertisementsHistory(email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select)
         SELECT email_of_driver, start_location, end_location, creation_date_and_time, date_of_pickup, time_of_pickup, self_select FROM advertisements WHERE advertisements.advertisementID = r3.advertisementID;
         DELETE FROM advertisements WHERE advertisements.advertisementID = r3.advertisementID;
-END LOOP;
+	END LOOP;
 RETURN 'Update complete';
 END;
 $$

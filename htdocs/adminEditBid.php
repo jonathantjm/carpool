@@ -29,7 +29,7 @@ if (isset($_POST['submitForm'])) {
 		$adIdError = $error;
     } elseif ($error === 'Price should be numeric and greater than 0!') {
 		$priceError = $error;
-    } elseif ($error === 'Status is case-sensitive and should be Pending, Rejected, Accepted, Offer retracted or Offer expired') {
+    } elseif ($error === 'Status is case-sensitive and should be Pending, Rejected, Accepted or Offer retracted') {
 		$statusError='';
 	} elseif ($error == '') {
 		header("Location: adminBid.php");
