@@ -16,14 +16,16 @@ $locations = pg_query($db, "SELECT * FROM locations");
 		<div class="container">
 			<div class="row">
 				<div class="col-md-10">
-					<h2 class="text-center"><b>Make a bid by searching for offers</b></h2>
+					<div style="margin-left:175px;">
+						<h2 class="text-center"><b>Make a bid by searching for offers</b></h2>
+					</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-1 col-md-offset-1">
 					<a href="userBidHistory.php" class='btn btn-primary' role='button'>View your past bids</a>
 				</div>
 			</div>
 		</div>
-		<div id="divForm">
+		<div id="divBox">
 			<form action="" method="post">
 			<?php
 			$locations_array = array();
@@ -121,7 +123,9 @@ $locations = pg_query($db, "SELECT * FROM locations");
 	}
 	echo "</div>";
 ?>
-		<h2 class="text-center"><b>Your Bids:</b></h2>
+		<div id="divText">
+			<h2 class="text-center"><b>Your bids</b></h2>
+		</div>
 		<div id="divTable">
 <?php 
 $count = 1;
@@ -156,13 +160,15 @@ if (pg_num_rows($result) > 0){
 		$count++;
 	}
 	echo "</tbody>
-		</table>";	
+		</table>
+	</div>";	
 }
 else{
-	echo "<br>You do have any bids!<br><br>";
+	echo "<div id='divBox'>
+		<span style='font-size:20px;'>You do have any bids!</span>
+		</div>";
 }
 ?>
-		</div>
 		<a id="back-to-top" href="#" class="btn btn-primary btn-lg back-to-top" role="button" title="Scroll to top" data-toggle="tooltip" data-placement="left"><i class="fas fa-arrow-up"></i></a>
 	</body>
 </html>

@@ -18,25 +18,18 @@ $driver = pg_query_params($db, "SELECT is_driver FROM useraccount
 	window.location = "userAcceptBid.php";
   }
 </script>
-
-<html>
 	<body id="b1">
+		<div class="btn-group btn-group-justified" style="width:80%; margin:auto">
+			<a href="userBid.php" class="btn btn-default" style="font-size:30px; background-color:#F3951D; border-color:#040404">Manage bid</a>
+			<?php if (pg_fetch_assoc($driver)['is_driver'] == 't'){
+				echo "<a href='userOffer.php' class='btn btn-default' style='font-size:30px; background-color:#F3951D; border-color:#040404'>Manage offer</a>";
+			}
+			?>
+		</div>
 		<div>
-			<h2>User Profile</h2>
-			<table cellpadding = "10">
-				<tr>
-				<td><button type="button" class="btn btn-primary" role="button" onclick="bid_Display()">Manage your bids</button></td>
-				<?php
-				if (pg_fetch_assoc($driver)['is_driver'] == 't'){
-					echo "<td><button type=\"button\" class='btn btn-primary' role='button' onclick=\"offer_Display()\">Manage your offers</button></td>";
-					echo "<td><button type=\"button\" class='btn btn-primary' role='button' onclick=\"accept_Display()\">Accept bids</button></td>";
-				}
-				?>
-				</tr>
-			</table>
 			<h2 class="text-center">Latest rides available</h2>
 			<div id="divTable">
-				<table id="table" class="table table-striped table-bordered" style="width:100%">
+				<table id="table" class="table table-striped table-bordered" style="width:100%;">
 					<?php 
 					$result = pg_query_params($db, 'SELECT * FROM advertisements WHERE email_of_driver <> $1 AND closed = false ORDER BY date_of_pickup, time_of_pickup', array($email)); 
 					$counter = 1;

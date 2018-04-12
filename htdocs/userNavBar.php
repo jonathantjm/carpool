@@ -32,7 +32,6 @@ echo "<script type='text/javascript'>
             return false;
         });
         
-        $('#back-to-top').tooltip('show');
 	});
 	</script>";
 ?>
@@ -51,7 +50,6 @@ echo "<script type='text/javascript'>
                             <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="userBid.php">View bids</a></li>
-                                <li><a href="userCreateBid.php">Create bid</a></li>
                             </ul>
                         </li>
                         <li class ="dropdown">

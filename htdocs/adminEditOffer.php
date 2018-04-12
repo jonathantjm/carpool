@@ -65,7 +65,7 @@ if (isset($_POST['submit'])) {
 				}
 
 
-				echo "<strong style='color:blue'>Start Location: </strong>";
+				echo "<strong>Start Location: </strong>";
 				echo "<select name= \"start_location\" />";
 				foreach ($locations_array as $location){
 					if ($location == $adv_row[2]){
@@ -77,7 +77,7 @@ if (isset($_POST['submit'])) {
 				}
 				echo "</select><br/></br>";
 
-				echo "<strong style='color:blue'>End Location: </strong>";
+				echo "<strong>End Location: </strong>";
 				echo "<select name=\"end_location\" />";
 				foreach ($locations_array as $location){
 					if ($location == $adv_row[3]){
