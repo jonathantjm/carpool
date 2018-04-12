@@ -37,7 +37,6 @@ echo "<script type='text/javascript'>
             return false;
         });
         
-        $('#back-to-top').tooltip('show');
 	});
 	</script>";
 ?>
